@@ -17,30 +17,8 @@
 
 #include <stdio.h>
 int nb_instruct = 0;
-int nb_pb_1 = 0;
-int nb_pa_1 = 0;
-int nb_pb_2 = 0;
-int nb_pb_3 = 0;
-int nb_pa_2 = 0;
-int nb_pa_3 = 0;
-int nb_ra_1 = 0;
-int nb_ra_2 = 0;
-int nb_ra_3 = 0;
-int nb_ra_4 = 0;
-int nb_ra_5 = 0;
-int nb_ra_6 = 0;
-int nb_rb_1 = 0;
-int nb_rb_2 = 0;
-int nb_rrb = 0;
-int nb_rr = 0;
-int nb_sb = 0;
 
-
-int debug_var = 0;
-
-int plop = 0;
-
-void    debug(t_list **lst_a, t_list **lst_b, int show)
+void    debug(t_list **lst_a, t_list **lst_b)
 {
     t_list *tmp_a;
     t_list *tmp_b;
@@ -48,250 +26,243 @@ void    debug(t_list **lst_a, t_list **lst_b, int show)
     int len_a;
     int len_b;
 
-    int nb_to_show = 12;
+    int nb_to_show = 26;
 
-    if (show)
+    if (lst_a && *lst_a)
     {
-        if (lst_a && *lst_a)
+        len_a = ft_lstlength(*lst_a); //a opti
+        tmp_a = *lst_a;
+        i = 0;
+        while (tmp_a)
         {
-            len_a = lst_length(*lst_a); //a opti
-            tmp_a = *lst_a;
-            i = 0;
-            while (tmp_a)
-            {
-                if (i < nb_to_show || i >= len_a - nb_to_show)
-                    printf("%i ", tmp_a->nb);
-                if (i == nb_to_show)
-                    printf("... "); //a ameliorer
-                tmp_a = tmp_a->next;
-                i++;
-            }
-            printf("\n");
+            if (i < nb_to_show || i >= len_a - nb_to_show)
+                printf("%i ", *((int *)tmp_a->content));
+            if (i == nb_to_show)
+                printf("... "); //a ameliorer
+            tmp_a = tmp_a->next;
+            i++;
         }
-        if (lst_b && *lst_b)
-        {
-            len_b = lst_length(*lst_b); //a opti
-            tmp_b = *lst_b;
-            i = 0;
-            while (tmp_b)
-            {
-                if (i < nb_to_show || i > len_b - nb_to_show)
-                    printf("%i ", tmp_b->nb);
-                if (i == nb_to_show)
-                    printf("... "); //a ameliorer
-                tmp_b = tmp_b->next;
-                i++;
-            }
-            printf("\n");
-        }
+        printf("\n");
     }
-    printf("new\n");
+    if (lst_b && *lst_b)
+    {
+        len_b = ft_lstlength(*lst_b); //a opti
+        tmp_b = *lst_b;
+        i = 0;
+        while (tmp_b)
+        {
+            if (i < nb_to_show || i > len_b - nb_to_show)
+                printf("%i ", *((int *)tmp_b->content));
+            if (i == nb_to_show)
+                printf("... "); //a ameliorer
+            tmp_b = tmp_b->next;
+            i++;
+        }
+        printf("\n");
+    }
 }
 
-int r = 0;
-
-void    split_b(t_list **lst_a, t_list **lst_b, int *sorted, int pivot_min, int *next_index, int *len_b, int verbose)
+void    split_b(t_list **lst_a, t_list **lst_b, int *sorted, int *next_index, int *len_b, int verbose)
 {
     int i;
     int nb_to_send;
+    int do_ra; // je pourrais faire sans cette variable mais elle rends le code beaucoup plus lisible
+    int pivot_min;
+    //int do_rb = 0;
 
-    nb_to_send = *len_b / 2;
+    pivot_min = *len_b / 2 + *len_b % 2 + *next_index;
+    i = 0;
+    do_ra = 0;
+    nb_to_send = *len_b / 2; //je pourrais utilise le half added en vrai
+    while (i < nb_to_send)
+    {
+        if (*((int *)(*lst_b)->content) >= sorted[pivot_min] || *((int *)(*lst_b)->content) == sorted[*next_index])
+        {
+            if (do_ra)
+            {
+                rotate(1, lst_a, "ra\n");
+                do_ra = 0;
+                nb_instruct++;
+            }
+            push(lst_a, lst_b, "pa\n");
+            (*len_b)--;
+            if (*((int *)(*lst_a)->content) == sorted[*next_index])
+            {
+                if (*((int *)(*lst_a)->content) < sorted[pivot_min])
+                    i--;
+                (*next_index)++;
+                do_ra = 1;
+            }
+            i++;
+        }
+        else //comparer avec et sans le define_direction, c'est pas forcement opti comme je l'ai fait la 
+        {
+            //define_direction(lst_b, pivot_min, sorted[*next_index], *len_b);
+            if (do_ra)
+            {
+                rotate_both(1, lst_a, lst_b, "rr\n");
+                do_ra = 0;
+            }
+            else
+                rotate(1, lst_b, "rb\n");
+        }
+        nb_instruct++;
+        if (verbose)
+            debug(lst_a, lst_b);
+    }
+    while (*lst_b && *((int *)(*lst_b)->content) == sorted[*next_index]) //je dois pouvoir fusionner avec en dessus mais en attendant laissons comme ca
+    {
+        push(lst_a, lst_b, "pa\n");
+        rotate(1, lst_a, "ra\n");
+        nb_instruct += 2;
+        (*len_b)--;
+        (*next_index)++;
+        if (verbose)
+            debug(lst_a, lst_b);
+    }
+}
+
+void    define_direction(t_list **lst_b, int pivot_min, int desired, int len_b)
+{
+    t_list *tmp;
+    int i;
+    int first;
+    int last;
+
+    tmp = *lst_b;
+    i = 0;
+    first = 0;
+    last = 0;
+    while (tmp)
+    {
+        //a opti
+        if (*((int *)tmp->content) >= pivot_min || *((int *)tmp->content) == desired)
+        {
+            if (first == 0)
+                first = i;
+            else
+                last = i;
+        }
+        i++;
+        tmp = tmp->next;
+    }
+    //je sais pas si je devrais mettre une priorite sur le next_index ?
+    if (last != 0 && len_b - last < first) //logiquement je devrais au moins ajouter une punition de +1
+    {
+        /*printf("first, last, len_b, len - last, min, desired : %i, %i, %i, %i, %i, %i\n", first, last, len_b, len_b - last, pivot_min, desired);
+        debug(NULL, lst_b, 1);
+        printf("\n");*/
+        rotate(0, lst_b, "rrb\n");
+    }
+    else
+        rotate(1, lst_b, "rb\n");
+}
+
+void    send_half(t_list **lst_a, t_list **lst_b, int *sorted, int pivot_min, int nb_to_send, int *next_index, int *len_b, int verbose)
+{
+    int i;
+
     i = 0;
     while (i < nb_to_send)
     {
-        if ((*lst_b)->nb >= pivot_min || (*lst_b)->nb == sorted[*next_index])
+        if (*((int *)(*lst_a)->content) == sorted[*next_index] && *next_index != 0)
         {
-            push(lst_a, lst_b);
-            (*len_b)--;
-            //ft_putstr("pa\n");
-            if ((*lst_a)->nb == sorted[*next_index])
-            {
-                if ((*lst_a)->nb < pivot_min) // last ?
-                    i--;
-                (*next_index)++;
-                rotate(1, lst_a);
-                //ft_putstr("ra\n");
-                nb_instruct++;
-                nb_ra_3++;
-            }
-            i++;
-            nb_pa_1++;
-        }
-        else
-        {
-            rotate(1, lst_b);
-            //ft_putstr("rb\n");
-            nb_rb_1++;
-        }
-        //define_direction(sender, sorted, pivot_min, last);
-        nb_instruct++;
-        if (verbose)
-            debug(lst_a, lst_b, 0);
-    }
-}
-
-void    send_half(t_list **lst_a, t_list **lst_b, int *sorted, int pivot_min, int pivot_max, int sorted_len, int *next_index, int *len_b, int verbose)
-{
-    int i;
-    int last;
-
-    i = 0;
-    if (pivot_max != sorted_len)
-        last = sorted[pivot_max];
-    else
-        last = sorted[pivot_max - 1] + 1;
-    while (i < pivot_max - pivot_min)
-    {
-        if ((*lst_a)->nb == sorted[*next_index] && *next_index != 0)
-        {
-            rotate(1, lst_a);
+            rotate(1, lst_a, "ra\n");
             (*next_index)++;
             i++;
-            //ft_putstr("ra\n");
-            nb_ra_1++;
         }
-        else if ((*lst_a)->nb >= sorted[pivot_min] && (*lst_a)->nb < last)
+        else if (*((int *)(*lst_a)->content) >= sorted[pivot_min] && *((int *)(*lst_a)->content) <= sorted[pivot_min + nb_to_send - 1])
         {
-            push(lst_b, lst_a);
-            //ft_putstr("pb\n");
-            (*len_b)++;
-            nb_pb_1++;
+            push(lst_b, lst_a, "pb\n");
             i++;
+            (*len_b)++;
         }
         else
-        {
-            nb_ra_2++;
-            rotate(1, lst_a);
-            //ft_putstr("ra\n");
-        }
+            rotate(1, lst_a, "ra\n");
         nb_instruct++;
         if (verbose)
-            debug(lst_a, lst_b, 0);
+            debug(lst_a, lst_b);
     }
 }
 
-int    send_in_b(t_list **lst_a, t_list **lst_b, int *sorted, int *next_index, int *len_b, int verbose)
+void    send_in_b(t_list **lst_a, t_list **lst_b, int diff, int *sorted, int *next_index, int *len_b, int verbose)
 {
     int i;
-    int min;
-    int max;
     
     i = 0;
-    min = sorted[*next_index];
-    max = 0;
-    while ((*lst_a)->nb != sorted[*next_index])
+    while (i < diff)
     {
-        if (max == 0 || (*lst_a)->nb > max)
-            max = (*lst_a)->nb;
-        push(lst_b, lst_a);
-        //ft_putstr("pb ");
-        nb_instruct++;
-        nb_pb_2++;
-        (*len_b)++;
-        if (verbose)
-            debug(lst_a, lst_b, 0);
-        i++;
-    }
-    rotate(1, lst_a);
-    //ft_putstr("ra ");
-    nb_instruct++;
-    (*next_index)++;
-    nb_ra_4++;
-    while (i < max - min)
-    {
-        if ((*lst_a)->nb == sorted[*next_index])
+        //y'a pas moyen de gagner des trucs en checkant si on vient pas d'envoyer le prochain ?
+        //
+
+        /*if (*((int *)(*lst_a)->next->content) == sorted[*next_index])
         {
-            rotate(1, lst_a);
-            //ft_putstr("ra\n");
-            nb_ra_6++;
+            if ()
+        }*/
+        if (*((int *)(*lst_a)->next->content) == sorted[*next_index])
+            swap(*lst_a, "sa\n");
+        if (*((int *)(*lst_a)->content) == sorted[*next_index])
+        {
+            rotate(1, lst_a, "ra\n");
             (*next_index)++;
         }
         else
         {
-            if (max == 0 || (*lst_a)->nb > max)
-                max = (*lst_a)->nb;
-            push(lst_b, lst_a);
-            nb_pb_3++;
+            push(lst_b, lst_a, "pb\n");
             (*len_b)++;
-            //ft_putstr("pb ");
         }
+        i++;
         nb_instruct++;
         if (verbose)
-            debug(lst_a, lst_b, 0);
-        i++;
+            debug(lst_a, lst_b);
     }
-    return (max);
 }
 
-int q = 0;
-
-void    real_qs_lst(t_list **lst_a, t_list **lst_b, int *sorted, int pivot_min, int sorted_len, int *next_index, int *len_b, int verbose)
+void    real_qs_lst(t_list **lst_a, t_list **lst_b, int *sorted, int *next_index, int *len_b, t_list **lst_halves, int verbose)
 {
-    if (q >= 1)
-    {
-        printf("\033[31m\nnb_instructs : %i\nnb_ra_1 : %i\nnb_ra_2 : %i\nnb_ra_3 : %i\nnb_ra_4 : %i\nnb_ra_5 : %i\nnb_ra_6 : %i\ntotal_ra : %i\n\nnb_pa_1 : %i\nnb_pa_2 : %i\nnb_pa_3 : %i\ntotal_pa : %i\n\nnb_pb_1 : %i\nnb_pb_2 : %i\nnb_pb_3 : %i\ntotal_pb : %i\n\nnb_rb_1 : %i\nnb_rb_2 : %i\nnb_sb : %i\nnb_rr : %i\nnb_rrb  : %i\ntotal_autre: %i\n\033[0m", nb_instruct, nb_ra_1, nb_ra_2, nb_ra_3, nb_ra_4, nb_ra_5, nb_ra_6, nb_ra_1 + nb_ra_2 + nb_ra_3 + nb_ra_4 + nb_ra_5 + nb_ra_6, nb_pa_1, nb_pa_2, nb_pa_3, nb_pa_1 + nb_pa_2 + nb_pa_3, nb_pb_1, nb_pb_2, nb_pb_3, nb_pb_1 + nb_pb_2 + nb_pb_3, nb_rb_1, nb_rb_2, nb_sb, nb_rr, nb_rrb, nb_rb_1 + nb_rb_2 + nb_sb + nb_rr + nb_rrb);
-        debug(lst_a, lst_b, 1);
-        printf("\n");
-    }
+    int half;
 
     if (*len_b > 9)
     {
-        split_b(lst_a, lst_b, sorted, pivot_min, next_index, len_b, verbose);
-        pivot_min = sorted[*next_index] + *len_b / 2 + *len_b % 2;
-        real_qs_lst(lst_a, lst_b, sorted, pivot_min, sorted_len, next_index, len_b, verbose);
-
-        /*printf("\033[31m\nnb_instructs : %i\nnb_ra_1 : %i\nnb_ra_2 : %i\nnb_ra_3 : %i\nnb_ra_4 : %i\nnb_ra_5 : %i\nnb_ra_6 : %i\ntotal_ra : %i\n\nnb_pa_1 : %i\nnb_pa_2 : %i\nnb_pa_3 : %i\ntotal_pa : %i\n\nnb_pb_1 : %i\nnb_pb_2 : %i\nnb_pb_3 : %i\ntotal_pb : %i\n\nnb_rb_1 : %i\nnb_rb_2 : %i\nnb_sb : %i\nnb_rr : %i\nnb_rrb  : %i\ntotal_autre: %i\n\033[0m", nb_instruct, nb_ra_1, nb_ra_2, nb_ra_3, nb_ra_4, nb_ra_5, nb_ra_6, nb_ra_1 + nb_ra_2 + nb_ra_3 + nb_ra_4 + nb_ra_5 + nb_ra_6, nb_pa_1, nb_pa_2, nb_pa_3, nb_pa_1 + nb_pa_2 + nb_pa_3, nb_pb_1, nb_pb_2, nb_pb_3, nb_pb_1 + nb_pb_2 + nb_pb_3, nb_rb_1, nb_rb_2, nb_sb, nb_rr, nb_rrb, nb_rb_1 + nb_rb_2 + nb_sb + nb_rr + nb_rrb);
-        debug(lst_a, lst_b, 1);
-        printf("\n");*/
-
-        send_in_b(lst_a, lst_b, sorted, next_index, len_b, verbose);
-
-        /*printf("\033[31m\nnb_instructs : %i\nnb_ra_1 : %i\nnb_ra_2 : %i\nnb_ra_3 : %i\nnb_ra_4 : %i\nnb_ra_5 : %i\nnb_ra_6 : %i\ntotal_ra : %i\n\nnb_pa_1 : %i\nnb_pa_2 : %i\nnb_pa_3 : %i\ntotal_pa : %i\n\nnb_pb_1 : %i\nnb_pb_2 : %i\nnb_pb_3 : %i\ntotal_pb : %i\n\nnb_rb_1 : %i\nnb_rb_2 : %i\nnb_sb : %i\nnb_rr : %i\nnb_rrb  : %i\ntotal_autre: %i\n\033[0m", nb_instruct, nb_ra_1, nb_ra_2, nb_ra_3, nb_ra_4, nb_ra_5, nb_ra_6, nb_ra_1 + nb_ra_2 + nb_ra_3 + nb_ra_4 + nb_ra_5 + nb_ra_6, nb_pa_1, nb_pa_2, nb_pa_3, nb_pa_1 + nb_pa_2 + nb_pa_3, nb_pb_1, nb_pb_2, nb_pb_3, nb_pb_1 + nb_pb_2 + nb_pb_3, nb_rb_1, nb_rb_2, nb_sb, nb_rr, nb_rrb, nb_rb_1 + nb_rb_2 + nb_sb + nb_rr + nb_rrb);
-        debug(lst_a, lst_b, 1);
-        printf("\n");*/
-        pivot_min = sorted[*next_index] + *len_b / 2 + *len_b % 2;
-        real_qs_lst(lst_a, lst_b, sorted, pivot_min, sorted_len, next_index, len_b, verbose);
-       /* printf("la\n");
-        printf("\033[31m\nnb_instructs : %i\nnb_ra_1 : %i\nnb_ra_2 : %i\nnb_ra_3 : %i\nnb_ra_4 : %i\nnb_ra_5 : %i\nnb_ra_6 : %i\ntotal_ra : %i\n\nnb_pa_1 : %i\nnb_pa_2 : %i\nnb_pa_3 : %i\ntotal_pa : %i\n\nnb_pb_1 : %i\nnb_pb_2 : %i\nnb_pb_3 : %i\ntotal_pb : %i\n\nnb_rb_1 : %i\nnb_rb_2 : %i\nnb_sb : %i\nnb_rr : %i\nnb_rrb  : %i\ntotal_autre: %i\n\033[0m", nb_instruct, nb_ra_1, nb_ra_2, nb_ra_3, nb_ra_4, nb_ra_5, nb_ra_6, nb_ra_1 + nb_ra_2 + nb_ra_3 + nb_ra_4 + nb_ra_5 + nb_ra_6, nb_pa_1, nb_pa_2, nb_pa_3, nb_pa_1 + nb_pa_2 + nb_pa_3, nb_pb_1, nb_pb_2, nb_pb_3, nb_pb_1 + nb_pb_2 + nb_pb_3, nb_rb_1, nb_rb_2, nb_sb, nb_rr, nb_rrb, nb_rb_1 + nb_rb_2 + nb_sb + nb_rr + nb_rrb);
-        debug(lst_a, lst_b, 1);
-        printf("\n");*/
-        q++;
+        half = *len_b / 2;
+        ft_lstadd(lst_halves, ft_lstnew(&half, sizeof(half)));
+        split_b(lst_a, lst_b, sorted, next_index, len_b, verbose);
+        real_qs_lst(lst_a, lst_b, sorted, next_index, len_b, lst_halves, verbose);
+        send_in_b(lst_a, lst_b, ft_pop_value(lst_halves), sorted, next_index, len_b, verbose);
+        real_qs_lst(lst_a, lst_b, sorted, next_index, len_b, lst_halves, verbose);
     }
     else
     {
-        sort_batch(lst_a, lst_b, sorted, &nb_instruct, next_index, len_b, verbose, &nb_ra_5, &nb_sb, &nb_rrb, &nb_pa_2, &nb_rr, &nb_rb_2);
-        /*printf("\033[31m\nnb_instructs : %i\nnb_ra_1 : %i\nnb_ra_2 : %i\nnb_ra_3 : %i\nnb_ra_4 : %i\nnb_ra_5 : %i\nnb_ra_6 : %i\ntotal_ra : %i\n\nnb_pa_1 : %i\nnb_pa_2 : %i\nnb_pa_3 : %i\ntotal_pa : %i\n\nnb_pb_1 : %i\nnb_pb_2 : %i\nnb_pb_3 : %i\ntotal_pb : %i\n\nnb_rb_1 : %i\nnb_rb_2 : %i\nnb_sb : %i\nnb_rr : %i\nnb_rrb  : %i\ntotal_autre: %i\n\033[0m", nb_instruct, nb_ra_1, nb_ra_2, nb_ra_3, nb_ra_4, nb_ra_5, nb_ra_6, nb_ra_1 + nb_ra_2 + nb_ra_3 + nb_ra_4 + nb_ra_5 + nb_ra_6, nb_pa_1, nb_pa_2, nb_pa_3, nb_pa_1 + nb_pa_2 + nb_pa_3, nb_pb_1, nb_pb_2, nb_pb_3, nb_pb_1 + nb_pb_2 + nb_pb_3, nb_rb_1, nb_rb_2, nb_sb, nb_rr, nb_rrb, nb_rb_1 + nb_rb_2 + nb_sb + nb_rr + nb_rrb);
-        debug(lst_a, lst_b, 1);
-        printf("\n");*/
+        sort_batch(lst_a, lst_b, sorted, &nb_instruct, next_index, len_b, verbose);
     }
 }
 
 void get_instruct(t_list **lst_a, t_list **lst_b, int *sorted, int sorted_len, int verbose)
 {
-    int pivot_min;
-    int pivot_max;
     int next_index;
     int len_b;
+    t_list *lst_halves;
 
+    lst_halves = NULL;
     next_index = 0;
     len_b = 0;
-    send_half(lst_a, lst_b, sorted, 0, sorted_len / 2, sorted_len, &next_index, &len_b, verbose);
-    printf("\033[31m\nnb_instructs : %i\nnb_ra_1 : %i\nnb_ra_2 : %i\nnb_ra_3 : %i\nnb_ra_4 : %i\nnb_ra_5 : %i\nnb_ra_6 : %i\ntotal_ra : %i\n\nnb_pa_1 : %i\nnb_pa_2 : %i\nnb_pa_3 : %i\ntotal_pa : %i\n\nnb_pb_1 : %i\nnb_pb_2 : %i\nnb_pb_3 : %i\ntotal_pb : %i\n\nnb_rb_1 : %i\nnb_rb_2 : %i\nnb_sb : %i\nnb_rr : %i\nnb_rrb  : %i\ntotal_autre: %i\n\033[0m", nb_instruct, nb_ra_1, nb_ra_2, nb_ra_3, nb_ra_4, nb_ra_5, nb_ra_6, nb_ra_1 + nb_ra_2 + nb_ra_3 + nb_ra_4 + nb_ra_5 + nb_ra_6, nb_pa_1, nb_pa_2, nb_pa_3, nb_pa_1 + nb_pa_2 + nb_pa_3, nb_pb_1, nb_pb_2, nb_pb_3, nb_pb_1 + nb_pb_2 + nb_pb_3, nb_rb_1, nb_rb_2, nb_sb, nb_rr, nb_rrb, nb_rb_1 + nb_rb_2 + nb_sb + nb_rr + nb_rrb);
-    debug(lst_a, lst_b, 1);
-    printf("\n");
-    pivot_max = sorted_len / 2;
-    pivot_min = pivot_max / 2;
-    real_qs_lst(lst_a, lst_b, sorted, pivot_min, sorted_len, &next_index, &len_b, verbose);
-    printf("\033[31m\nnb_instructs : %i\nnb_ra_1 : %i\nnb_ra_2 : %i\nnb_ra_3 : %i\nnb_ra_4 : %i\nnb_ra_5 : %i\nnb_ra_6 : %i\ntotal_ra : %i\n\nnb_pa_1 : %i\nnb_pa_2 : %i\nnb_pa_3 : %i\ntotal_pa : %i\n\nnb_pb_1 : %i\nnb_pb_2 : %i\nnb_pb_3 : %i\ntotal_pb : %i\n\nnb_rb_1 : %i\nnb_rb_2 : %i\nnb_sb : %i\nnb_rr : %i\nnb_rrb  : %i\ntotal_autre: %i\n\033[0m", nb_instruct, nb_ra_1, nb_ra_2, nb_ra_3, nb_ra_4, nb_ra_5, nb_ra_6, nb_ra_1 + nb_ra_2 + nb_ra_3 + nb_ra_4 + nb_ra_5 + nb_ra_6, nb_pa_1, nb_pa_2, nb_pa_3, nb_pa_1 + nb_pa_2 + nb_pa_3, nb_pb_1, nb_pb_2, nb_pb_3, nb_pb_1 + nb_pb_2 + nb_pb_3, nb_rb_1, nb_rb_2, nb_sb, nb_rr, nb_rrb, nb_rb_1 + nb_rb_2 + nb_sb + nb_rr + nb_rrb);
-    debug(lst_a, lst_b, 1);
-    printf("\n");
-    exit(1);
-    pivot_min = pivot_max;
-    pivot_max = sorted_len;
-    send_half(lst_a, lst_b, sorted, pivot_min, pivot_max, sorted_len, &next_index, &len_b, verbose);
-    pivot_max = sorted_len;
-    pivot_min = sorted[next_index] + len_b / 2;
-    real_qs_lst(lst_a, lst_b, sorted, pivot_min, sorted_len, &next_index, &len_b, verbose);
+    if (sorted_len > 9)
+    {
+        send_half(lst_a, lst_b, sorted, 0, sorted_len / 2, &next_index, &len_b, verbose);
+        /*debug(lst_a, lst_b);
+        printf("\n");*/
+        real_qs_lst(lst_a, lst_b, sorted, &next_index, &len_b, &lst_halves, verbose);
+        /*debug(lst_a, lst_b);
+        printf("\n");*/
+        send_half(lst_a, lst_b, sorted, sorted_len / 2, sorted_len / 2 + sorted_len % 2, &next_index, &len_b, verbose);
+        /*debug(lst_a, lst_b);
+        printf("\n");*/
+        real_qs_lst(lst_a, lst_b, sorted, &next_index, &len_b, &lst_halves, verbose);
+    }
+    else
+    {
+        sort_mini(lst_a, lst_b, sorted, sorted_len, &nb_instruct); // a faire mieux
+    }
 }
 
 int main(int argc, char **argv)
@@ -302,7 +273,6 @@ int main(int argc, char **argv)
 	int     *sorted;
 	int     tmp;
 	int		res;
-	//int		nb_instruct = 0;
     int     len;
     int     j;
     int     verbose;
@@ -311,6 +281,19 @@ int main(int argc, char **argv)
 	res = 1;
     lst_b = NULL;
     lst_a = NULL;
+
+    //int test = *((int *)content);
+    /*int nb = 12;
+    ft_lstappend(&lst_a, ft_lstnew(&nb, sizeof(nb)));
+    nb = 13;
+    ft_lstappend(&lst_a, ft_lstnew(&nb, sizeof(nb)));
+    printf("%i\n", *((int *)lst_a->content));
+    printf("%i\n", *((int *)lst_a->next->content));
+    swap(lst_a);
+    printf("%i\n", *((int *)lst_a->content));
+    printf("%i\n", *((int *)lst_a->next->content));
+    exit(1);*/
+
 	if (argc > 1)
 	{
         if (ft_strcmp(argv[i], "-v") == 0)
@@ -323,7 +306,7 @@ int main(int argc, char **argv)
 			tmp = ft_atoi(argv[i + verbose]);
 			sorted[i - 1] = tmp;
 			i++;
-			ft_lstappend(&lst_a, ft_lstnew(tmp));
+			ft_lstappend(&lst_a, ft_lstnew(&tmp, sizeof(tmp)));
 		}
 		quicksort(sorted, i - 1);
         len = i - 1;
@@ -331,12 +314,11 @@ int main(int argc, char **argv)
 		get_instruct(&lst_a, &lst_b, sorted, len, verbose);
 		while (lst_a)
 		{
-			printf("%i ", lst_a->nb);
+			printf("%i ", *((int *)lst_a->content));
 			lst_a = lst_a->next;
 		}
 		printf("\n");
         printf("nb_instruct : %i\n", nb_instruct);
-        printf("\033[31m\nnb_instructs : %i\nnb_ra_1 : %i\nnb_ra_2 : %i\nnb_ra_3 : %i\nnb_ra_4 : %i\nnb_ra_5 : %i\nnb_ra_6 : %i\ntotal_ra : %i\n\nnb_pa_1 : %i\nnb_pa_2 : %i\nnb_pa_3 : %i\ntotal_pa : %i\n\nnb_pb_1 : %i\nnb_pb_2 : %i\nnb_pb_3 : %i\ntotal_pb : %i\n\nnb_rb_1 : %i\nnb_rb_2 : %i\nnb_sb : %i\nnb_rr : %i\nnb_rrb  : %i\ntotal_autre: %i\n\033[0m", nb_instruct, nb_ra_1, nb_ra_2, nb_ra_3, nb_ra_4, nb_ra_5, nb_ra_6, nb_ra_1 + nb_ra_2 + nb_ra_3 + nb_ra_4 + nb_ra_5 + nb_ra_6, nb_pa_1, nb_pa_2, nb_pa_3, nb_pa_1 + nb_pa_2 + nb_pa_3, nb_pb_1, nb_pb_2, nb_pb_3, nb_pb_1 + nb_pb_2 + nb_pb_3, nb_rb_1, nb_rb_2, nb_sb, nb_rr, nb_rrb, nb_rb_1 + nb_rb_2 + nb_sb + nb_rr + nb_rrb);
-	}
+    }
 	return (0);    
 }

@@ -1,5 +1,3 @@
-// Je supprimerais/modifierais un bon nombre de ces fonctions quand je factoriserais la principale, mais en attendant je les mets ici
-
 #include "push_swap.h"
 
 
@@ -49,132 +47,152 @@ void	quicksort(int *arr, int len) //a ameliorer
 	}
 }
 
-void	sort_batch(t_list **lst_a, t_list **lst_b, int *sorted, int *nb_instruct, int *next_index, int *len_b, int verbose, int *nb_ra, int *nb_sb, int *nb_rrb, int *nb_pa_2, int *nb_rr, int *nb_rb)
+void	sort_batch(t_list **lst_a, t_list **lst_b, int *sorted, int *nb_instruct, int *next_index, int *len_b, int verbose)
 {
 	int i;
 	int dist;
+	int do_ra = 0;
 
 	i = 0;
-	while (*lst_b)
+	if (*lst_b)
 	{
-		while ((*lst_a)->nb == sorted[*next_index])
+		while (*lst_b)
 		{
-			rotate(1, lst_a);
-			//printf("ra ");
-			(*nb_instruct)++;
-			(*nb_ra)++;
-			(*next_index)++;
-			if (verbose)
-				debug(lst_a, lst_b, 0);
-		}
-		if ((*lst_b)->nb == sorted[*next_index])
-		{
-            push(lst_a, lst_b);
-			(*len_b)--;
-			(*nb_pa_2)++;
-			//ft_putstr("pa ");
-            i++;
-        }
-        else
-        {
-			if ((*lst_b)->nb > (*lst_b)->next->nb)
+			if (*((int *)(*lst_b)->content) == sorted[*next_index])
 			{
-				swap(*lst_b);
-				(*nb_sb)++;
-				//ft_putstr("sb ");
+				while ((*((int *)(*lst_a)->content) <= sorted[*next_index] && *((int *)(*lst_a)->content) != sorted[0])
+				|| (*((int *)(*lst_a)->content) <= sorted[*next_index] && *((int *)(*lst_b)->content) == sorted[1]))
+				{
+					rotate(1, lst_a, "ra\n");
+					(*nb_instruct)++;
+					if (verbose)
+						debug(lst_a, lst_b);
+				}
+				push(lst_a, lst_b, "pa\n");
+				(*len_b)--;
+				i++;
+				do_ra = 1;
+				(*next_index)++;
 			}
 			else
 			{
-				dist = ft_lstfind_i(*lst_b, sorted[*next_index]);
-				if (dist > *len_b / 2)
-				{
-					rotate(0, lst_b);
-					(*nb_rrb)++;
-					//ft_putstr("rrb ");
-				}
+				//dans l'immediat c'est plus opti sans mais je devrais pouvoir l'integrer d'une facon ou d'une autre
+				/*if (*((int *)(*lst_b)->content) > *((int *)(*lst_b)->next->content))
+					swap(*lst_b, "sb\n");
 				else
-				{
-					rotate(1, lst_b);
-					if ((*lst_a)->nb <= sorted[*next_index])
-					{
-						if ((*lst_a)->nb == sorted[*next_index])
-							(*next_index)++;
-						rotate(1, lst_a);
-						(*nb_instruct)++;
-						//ft_putstr("rr ");
-						(*nb_rr)++;
-					}
+				{*/
+					dist = ft_lstfind_i(*lst_b, sorted[*next_index]);
+					if (dist > *len_b / 2 - 1)
+						rotate(0, lst_b, "rrb\n");
 					else
 					{
-						//ft_putstr("rb ");
+						if (do_ra)
+						{
+							rotate_both(1, lst_a, lst_b, "rr\n");
+							do_ra = 0;
+						}
+						else
+							rotate(1, lst_b, "rb\n");
 					}
-					(*nb_rb)++;
-				}
+				//}
 			}
+			(*nb_instruct)++;
+			if (verbose)
+				debug(lst_a, lst_b);
 		}
+		rotate(1, lst_a, "ra\n");
 		(*nb_instruct)++;
 		if (verbose)
-			debug(lst_a, lst_b, 0);
-	}
-	//tourne a
-	while ((*lst_a)->nb == sorted[*next_index])
-	{
-		rotate(1, lst_a);
-		//printf("ra ");
-		(*nb_ra)++;
-		(*nb_instruct)++;
-		(*next_index)++;
-		if (verbose)
-			debug(lst_a, lst_b, 0);
+			debug(lst_a, lst_b);
 	}
 }
 
-/*void	define_direction(t_list **lst_b, int *sorted, int pivot_min, int last)
+int		get_up(int nb, int *sorted)
 {
 	int i;
-	t_list *tmp_b;
-	int	dist_front;
-	int dist_back;
-	int len_b;
 
-	tmp_b = *lst_b; //a tester
-	len_b = lst_length(*lst_b);
-	dist_front = 0;
-	dist_back = -1;
 	i = 0;
-	//a opti
-	while (tmp_b)
-	{
-		//if (dist_front != 0 && len_b < 10)
-		//	printf("nb, sorted[min], last, dist_front : %i, %i, %i, %i\n", tmp_b->nb, sorted[pivot_min], last, dist_front);
-		if (tmp_b->nb >= sorted[pivot_min] && tmp_b->nb < last && dist_front == 0)
-		{
-			dist_front = i;
-			dist_back = len_b - i;
-		}
-		else if (tmp_b->nb >= sorted[pivot_min] && tmp_b->nb < last && dist_front != 0)
-			dist_back = len_b - i;
-		tmp_b = tmp_b->next;
+	while (sorted[i] != nb)
 		i++;
-	}
-	/// rr ?
+	return (sorted[i + 1]);
+}
 
-	//voir dans test1.txt, mais la punition la plus opti n'est pas toujours la meme
-	//a analyser
-	if (dist_back != -1)
-		dist_back += 1;
-	printf("\ndist_front, dist_back, min, max : %i, %i, %i, %i\n", dist_front, dist_back, pivot_min, last);
-	debug(NULL, lst_b, 1);
-	///quand ils sont egalise sur le 1, je pense que c'est worth de faire un rrb pour repartir en rb
-	if (dist_front <= dist_back || dist_back == -1)
+int		test_sorted(t_list *lst)
+{
+	while (lst->next)
 	{
-		rotate(1, lst_b);
-		ft_putstr("rb ");
+		if (*((int *)lst->content) > *((int *)lst->next->content))
+			return (0);
+		lst = lst->next;
 	}
-	else
+	return (1);
+}
+
+void	sort_mini(t_list **lst_a, t_list **lst_b, int *sorted, int len, int *nb_instruct)
+{
+	//int up;
+	int half;
+	int len_b = 0;
+
+	half = sorted[len / 2];
+
+	while (len_b < len / 2)
 	{
-		rotate(0, lst_b);
-		ft_putstr("\033[31mrrb \033[0m");
+		if (*((int *)(*lst_a)->content) < half)
+		{
+			push(lst_b, lst_a, "pb\n");
+			len_b++;
+		}
+		else
+			rotate(1, lst_a, "ra\n");
+		(*nb_instruct)++;
 	}
-	printf("\n\n");
-}*/
+
+	debug(lst_a, lst_b);
+	printf("\n");
+	exit(1);
+	/*while (!test_sorted(*lst_a))
+	{
+		printf("yo?\n");
+		if (*((int *)(*lst_a)->content) > *((int *)(*lst_a)->next->content))
+		{
+			swap(*lst_a, "sa\n");
+			(*nb_instruct)++;
+		}
+		else if (*((int *)(*lst_a)->content) > sorted[len / 2])
+		{
+			rotate(0, lst_a, "rra\n");
+			(*nb_instruct)++;
+		}
+	}*/
+
+	int nb_index = ft_lstfindi(lst_a, );
+
+	while (*((int *)(*lst_b)->content) != sorted[len / 2 + len % 2])
+	{
+		if (*((int *)(*lst_a)->content) > *((int *)(*lst_a)->next->content))
+		{
+			swap(*lst_a, "sa\n");
+			(*nb_instruct)++;
+		}
+		else if (*((int *)(*lst_a)->content) > sorted[len / 2])
+		{
+			
+		}
+	}
+
+
+
+	if (*((int *)(*lst_b)->content) < *((int *)(*lst_b)->next->content))
+	{
+		swap(*lst_b, "sb\n");
+		(*nb_instruct)++;
+	}
+		
+	while (len_b > 0)
+	{
+		push(lst_a, lst_b, "pa\n");
+		len_b--;
+		(*nb_instruct)++;
+	}
+}

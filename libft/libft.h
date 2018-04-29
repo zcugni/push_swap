@@ -23,6 +23,13 @@ typedef	struct			s_trim
 	int end;
 }						t_trim;
 
+typedef struct			s_list
+{
+	void			*content;
+	size_t			content_size;
+	struct s_list	*next;
+}						t_list;
+
 typedef unsigned char	t_u_char;
 typedef unsigned int	t_u_int;
 
@@ -33,6 +40,19 @@ int						ft_isalnum(int c);
 int						ft_isalpha(int c);
 int						ft_isdigit(int c);
 int						ft_isprint(int c);
+char					*ft_itoa(int n);
+char					*ft_itoa_base(unsigned int nb, int base, int upper);
+void					ft_lstadd(t_list **alst, t_list *new);
+void					ft_lstappend(t_list **alst, t_list *new);
+t_list					*ft_lstcpy(t_list *ori);
+void					ft_lstdel(t_list **alst, void (*del)(void *, size_t));
+void					ft_lstdelone(t_list **alst, void (*del)(void *,
+	size_t));
+t_list					*ft_lstfind(t_list *list, void *content, size_t size);
+void					ft_lstiter(t_list *lst, void (*f)(t_list *elem));
+int						ft_lstlength(t_list *lst);
+t_list					*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
+t_list					*ft_lstnew(void const *content, size_t content_size);
 void					*ft_memalloc(size_t size);
 int						ft_memcmp(const void *s1, const void *s2, size_t n);
 void					*ft_memccpy(void *dst, const void *src, int c,
@@ -86,6 +106,7 @@ int						ft_toupper(int c);
 int						ft_tolower(int c);
 int						is_neg(char *str);
 int						get_next_line(const int fd, char **line);
-void    				ft_get_leaks(char *msg);
+void					lst_clr(t_list **lst);
+char					*lst_to_str(t_list *lst);
 
 #endif

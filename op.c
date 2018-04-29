@@ -12,30 +12,34 @@
 
 #include "push_swap.h"
 
-void	swap(t_list *lst)
+void	swap(t_list *lst, char *to_print)
 {
 	int	tmp;
 
 	if (lst && lst->next)
 	{
-		tmp = lst->next->nb;
-		lst->next->nb = lst->nb;
-		lst->nb = tmp;
+		tmp = *(int *)lst->next->content;
+		*((int *)lst->next->content) = *((int *)lst->content);
+		*((int *)lst->content) = tmp;
 	}
+	//printf("%s", to_print);
+	to_print = "n"; //je suis obligee de faire un truc avec to_print pour le compilateur
 }
 
-void	push(t_list **lst_x, t_list **lst_y)
+void	push(t_list **lst_receiver, t_list **lst_giver, char *to_print)
 {
 	t_list *new;
 
-	if (lst_y)
+	if (lst_giver)
 	{
-		new = ft_pop(lst_y);
-		ft_lstadd(lst_x, new);
+		new = ft_pop(lst_giver);
+		ft_lstadd(lst_receiver, new);
 	}
+	//printf("%s", to_print);
+	to_print = "n"; //je suis obligee de faire un truc avec to_print pour le compilateur
 }
 
-void	rotate(int up, t_list **lst)
+void	rotate(int up, t_list **lst, char *to_print)
 {
 	t_list *tmp;
 	t_list *first;
@@ -58,4 +62,15 @@ void	rotate(int up, t_list **lst)
 		*lst = tmp->next;
 		tmp->next = NULL;
 	}
+	//if (ft_strcmp(to_print, "no"))
+		//printf("%s", to_print);
+	to_print = "n"; //je suis obligee de faire un truc avec to_print pour le compilateur
+}
+
+void	rotate_both(int up, t_list **lst_a, t_list **lst_b, char *to_print)
+{
+	rotate(up, lst_a, "no");
+	rotate(up, lst_b, "no");
+	//printf("%s", to_print);
+	to_print = "n"; //je suis obligee de faire un truc avec to_print pour le compilateur
 }

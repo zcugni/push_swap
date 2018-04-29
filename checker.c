@@ -22,7 +22,7 @@ void	display_state(t_list *lst_a, t_list *lst_b)
 	ft_putstr("A : ");
 	while (tmp_a)
 	{
-		ft_putnbr(tmp_a->nb);
+		ft_putnbr(*((int *)tmp_a->content));
 		if (tmp_a->next)
 				ft_putstr(" -> ");
 		tmp_a = tmp_a->next;
@@ -30,7 +30,7 @@ void	display_state(t_list *lst_a, t_list *lst_b)
 	ft_putstr("\nB : ");
 	while (tmp_b)
 	{
-		ft_putnbr(tmp_b->nb);
+		ft_putnbr(*((int *)tmp_b->content));
 		if (tmp_b->next)
 			ft_putstr(" -> ");
 		tmp_b = tmp_b->next;
@@ -54,21 +54,21 @@ void	switch_op(t_list *lst_a, t_list *lst_b)
 		if (ft_strcmp(instruction[0], "sa") == 0 || ft_strcmp(instruction[0], "ss") == 0 || ft_strcmp(instruction[0], "sb") == 0)
 		{
 			if (ft_strchr(instruction[0], 'a') || ft_strcmp(instruction[0], "ss") == 0)
-				swap(lst_a);
+				swap(lst_a, ""); //je suis pas sure que ca marche sans rien afficher en vrai
 			if (ft_strchr(instruction[0], 'b') || ft_strcmp(instruction[0], "ss") == 0)
-				swap(lst_b);
+				swap(lst_b, "");
 		}
 		else if (up > -1)
 		{
 			if (!ft_strchr(instruction[0], 'a'))
-				rotate(up, &lst_b);
+				rotate(up, &lst_b, "");
 			if (!ft_strchr(instruction[0], 'b'))
-				rotate(up, &lst_a);
+				rotate(up, &lst_a, "");
 		}
 		else if (ft_strcmp(instruction[0], "pa") == 0)
-			push(&lst_a, &lst_b);
+			push(&lst_a, &lst_b, "");
 		else if (ft_strcmp(instruction[0], "pb") == 0)
-			push(&lst_b, &lst_a);
+			push(&lst_b, &lst_a, "");
 		else
 			ft_putstr_fd("Error\n", 2); //on dirait qu'il passe une fois de trop dans get_next_line et du coup 1 fois dans error
 		display_state(lst_a, lst_b);
@@ -82,6 +82,7 @@ int main(int argc, char **argv)
 	t_list  *lst_a;
 	t_list  *lst_b;
 	t_list	*tmp_lst;
+	int		tmp_nb;
 	int		sorted;
 
 	//gestion des doublons ?
@@ -93,14 +94,17 @@ int main(int argc, char **argv)
 	if (argc > 1)
 	{
 		while (argv[i])
-			ft_lstappend(&lst_a, ft_lstnew(ft_atoi(argv[i++])));
+		{
+			tmp_nb = ft_atoi(argv[i++]);
+			ft_lstappend(&lst_a, ft_lstnew(&tmp_nb, sizeof(tmp_nb)));
+		}
 		switch_op(lst_a, lst_b);
 		if (!lst_b)
 		{
 			tmp_lst = lst_a;
 			while (tmp_lst->next && sorted)
 			{
-				if (tmp_lst->nb > tmp_lst->next->nb)
+				if (*((int *)tmp_lst->content) > *((int *)tmp_lst->next->content))
 					sorted = 0;
 				tmp_lst = tmp_lst->next;
 			}

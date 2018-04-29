@@ -1,23 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_get_leaks.c                                     :+:      :+:    :+:   */
+/*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/21 16:02:16 by zcugni            #+#    #+#             */
-/*   Updated: 2018/03/21 16:02:19 by zcugni           ###   ########.fr       */
+/*   Created: 2017/11/12 17:18:39 by zcugni            #+#    #+#             */
+/*   Updated: 2017/11/12 17:18:40 by zcugni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
 
-void    ft_get_leaks(char *msg)
+t_list	*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem))
 {
-    system("leaks push_swap");
-    ft_putstr("\033[31m");
-    ft_putstr(msg);
-    ft_putstr("\033[0m");
-    getchar();
+	t_list *new;
+	t_list *current;
+	t_list *first_elem;
+
+	if (!lst || !f)
+		return (NULL);
+	new = f(lst);
+	first_elem = new;
+	current = lst->next;
+	while (current)
+	{
+		new->next = f(current);
+		new = new->next;
+		current = current->next;
+	}
+	return (first_elem);
 }
