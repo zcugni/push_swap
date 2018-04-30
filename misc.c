@@ -107,92 +107,110 @@ void	sort_batch(t_list **lst_a, t_list **lst_b, int *sorted, int *nb_instruct, i
 	}
 }
 
-int		get_up(int nb, int *sorted)
-{
-	int i;
-
-	i = 0;
-	while (sorted[i] != nb)
-		i++;
-	return (sorted[i + 1]);
-}
-
-int		test_sorted(t_list *lst)
+int		test_sorted(t_list *lst, int ascending)
 {
 	while (lst->next)
 	{
-		if (*((int *)lst->content) > *((int *)lst->next->content))
+		if (*((int *)lst->content) > *((int *)lst->next->content) && ascending)
+			return (0);
+		else if (*((int *)lst->content) < *((int *)lst->next->content) && !ascending)
 			return (0);
 		lst = lst->next;
 	}
 	return (1);
 }
 
-void	sort_mini(t_list **lst_a, t_list **lst_b, int *sorted, int len, int *nb_instruct)
+int		should_swap(t_list *lst, int *sorted, int nb, int len)
 {
-	//int up;
+	int up;
+	int down;
+	int i;
+
+	i = 0;
+	while (sorted[i] != nb)
+		i++;
+	if (i == 0)
+		down = sorted[0];
+	else
+		down = sorted[i - 1];
+	if (i == len)
+		up = sorted[i];
+	else
+		up = sorted[i + 1];
+	if (*((int *)lst->next->content) == down)
+		return (1);
+	while (lst->next)
+		lst = lst->next;
+	if (*((int *)lst->content) == up)
+		return (0);
+	else
+		return (1);
+}
+
+void	sort_mini(int ascending, t_list **lst, int *sorted, int len, int *nb_instruct)
+{
+	t_list *tmp;
+	int first;
+
+	first = 1;
+	tmp = *lst;
+	while (!test_sorted(*lst, ascending))
+	{
+		if ((*((int *)tmp->content) < *((int *)tmp->next->content) && !ascending) || (*((int *)tmp->content) > *((int *)tmp->next->content) && ascending))
+		{
+			if (first && should_swap(*lst, sorted, *((int *)tmp->content), len))
+			{
+				if (ascending)
+					swap(*lst, "sa\n");
+				else
+					swap(*lst, "sb\n");
+			}
+			else
+			{
+				if (ascending)
+					rotate(0, lst, "rra\n");
+				else
+					rotate(0, lst, "rrb\n");
+			}
+			(*nb_instruct)++;
+			tmp = *lst;
+			first = 1;
+		}
+		else
+		{
+			first = 0;
+			tmp = tmp->next;
+		}
+	}
+}
+
+void	little_list(t_list **lst_a, t_list **lst_b, int *sorted, int len, int *nb_instruct)
+{
 	int half;
 	int len_b = 0;
 
 	half = sorted[len / 2];
-
-	while (len_b < len / 2)
+	if (len > 3)
 	{
-		if (*((int *)(*lst_a)->content) < half)
+		while (len_b < len / 2)
 		{
-			push(lst_b, lst_a, "pb\n");
-			len_b++;
-		}
-		else
-			rotate(1, lst_a, "ra\n");
-		(*nb_instruct)++;
-	}
-
-	debug(lst_a, lst_b);
-	printf("\n");
-	exit(1);
-	/*while (!test_sorted(*lst_a))
-	{
-		printf("yo?\n");
-		if (*((int *)(*lst_a)->content) > *((int *)(*lst_a)->next->content))
-		{
-			swap(*lst_a, "sa\n");
+			if (*((int *)(*lst_a)->content) < half)
+			{
+				push(lst_b, lst_a, "pb\n");
+				len_b++;
+			}
+			else
+				rotate(1, lst_a, "ra\n");
 			(*nb_instruct)++;
 		}
-		else if (*((int *)(*lst_a)->content) > sorted[len / 2])
+		sort_mini(1, lst_a, sorted, len, nb_instruct);
+		sort_mini(0, lst_b, sorted, len, nb_instruct);
+		while (*lst_b)
 		{
-			rotate(0, lst_a, "rra\n");
+			push(lst_a, lst_b, "pa\n");
 			(*nb_instruct)++;
 		}
-	}*/
-
-	int nb_index = ft_lstfindi(lst_a, );
-
-	while (*((int *)(*lst_b)->content) != sorted[len / 2 + len % 2])
-	{
-		if (*((int *)(*lst_a)->content) > *((int *)(*lst_a)->next->content))
-		{
-			swap(*lst_a, "sa\n");
-			(*nb_instruct)++;
-		}
-		else if (*((int *)(*lst_a)->content) > sorted[len / 2])
-		{
-			
-		}
 	}
-
-
-
-	if (*((int *)(*lst_b)->content) < *((int *)(*lst_b)->next->content))
-	{
-		swap(*lst_b, "sb\n");
-		(*nb_instruct)++;
-	}
-		
-	while (len_b > 0)
-	{
-		push(lst_a, lst_b, "pa\n");
-		len_b--;
-		(*nb_instruct)++;
-	}
+	else
+		sort_mini(1, lst_a, sorted, len, nb_instruct);
 }

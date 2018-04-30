@@ -261,7 +261,8 @@ void get_instruct(t_list **lst_a, t_list **lst_b, int *sorted, int sorted_len, i
     }
     else
     {
-        sort_mini(lst_a, lst_b, sorted, sorted_len, &nb_instruct); // a faire mieux
+        //en vrai, ca marche avec send_half ici, mais vu que je fais que des ra et pas des rra, c'est moins opti
+        little_list(lst_a, lst_b, sorted, sorted_len, &nb_instruct); // a faire mieux
     }
 }
 

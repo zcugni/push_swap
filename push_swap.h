@@ -26,10 +26,10 @@ void	quicksort(int *arr, int len);
 int		abs(int nb);
 int		ft_lstfind_i(t_list *lst, int nb);
 
-t_list	*ft_lstcpy(t_list *ori);
 void    debug(t_list **lst_a, t_list **lst_b);
 void	sort_batch(t_list **lst_a, t_list **lst_b, int *sorted, int *nb_instruct, int *next_index, int *len_b, int verbose);
 void    define_direction(t_list **lst_b, int pivot_min, int desired, int len_b);
 
-void	sort_mini(t_list **lst_a, t_list **lst_b, int *sorted, int len, int *nb_instruct);
+void	little_list(t_list **lst_a, t_list **lst_b, int *sorted, int len, int *nb_instruct);
+
 #endif
