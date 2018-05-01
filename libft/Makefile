@@ -11,34 +11,59 @@
 # **************************************************************************** #
 
 NAME = libft.a
-SRCS =  ft_isalnum.c ft_isprint.c ft_strcat.c ft_strdup.c ft_strncmp.c \
-		ft_strstr.c ft_isalpha.c ft_memccpy.c ft_strchr.c ft_strlcat.c \
-		ft_strncpy.c ft_tolower.c ft_atoi.c ft_isascii.c ft_memcpy.c \
-		ft_strcmp.c ft_strlen.c ft_strnstr.c ft_toupper.c ft_bzero.c \
-		ft_isdigit.c ft_memset.c ft_strcpy.c ft_strncat.c ft_strrchr.c \
-		ft_memmove.c ft_memchr.c ft_memcmp.c ft_memalloc.c ft_memdel.c \
-		ft_strnew.c ft_strdel.c ft_strclr.c ft_striter.c ft_striteri.c \
-		ft_strmap.c ft_strmapi.c ft_strequ.c ft_strnequ.c ft_strsub.c \
-		ft_strjoin.c ft_strtrim.c ft_strsplit.c ft_itoa.c ft_putchar.c \
-		ft_putstr.c ft_putendl.c ft_putnbr.c ft_putchar_fd.c ft_putstr_fd.c \
-		ft_putendl_fd.c ft_putnbr_fd.c ft_lstnew.c ft_lstdelone.c ft_lstdel.c \
-		ft_lstadd.c ft_lstiter.c ft_lstmap.c ft_lstcpy.c ft_pow.c ft_lstfind.c \
-		ft_lstappend.c ft_strndup.c ft_lstlength.c ft_itoa_base.c lst_to_str.c \
-		ft_strsub_free.c ft_strjoin_free.c is_neg.c lst_clr.c get_next_line.c \
-		ft_strchri.c
-
-OBJS = $(SRCS:.c=.o)
-
 FLAG = -Wall -Werror -Wextra
 
-all: $(NAME)
+SRCS_STR = ft_strcat.c ft_strdup.c ft_strncmp.c ft_strstr.c ft_strcpy.c \
+			ft_strncat.c ft_strrchr.c ft_strncpy.c ft_strnew.c ft_strdel.c \
+			ft_strclr.c ft_striter.c ft_striteri.c ft_strmap.c ft_strmapi.c \
+			ft_strequ.c ft_strnequ.c ft_strsub.c ft_strjoin.c ft_strtrim.c \
+			ft_strsplit.c ft_strsub_free.c ft_strjoin_free.c ft_strcmp.c \
+			ft_strlen.c ft_strnstr.c ft_toupper.c ft_tolower.c ft_strndup.c \
+			ft_strchri.c ft_strchr.c ft_strlcat.c 
+
+SRCS_LST = ft_lstadd.c ft_lstiter.c ft_lstmap.c ft_lstcpy.c ft_lstnew.c \
+			ft_lstdelone.c ft_lstdel.c ft_lstfind.c ft_lstappend.c \
+			lst_clr.c lst_to_str.c ft_lstlength.c
+
+SRCS_MEM = ft_memmove.c ft_memchr.c ft_memcmp.c ft_memalloc.c ft_memdel.c \
+			ft_memcpy.c ft_bzero.c ft_memset.c ft_memccpy.c
+
+SRCS_IO = ft_putchar.c ft_putstr.c ft_putendl.c ft_putnbr.c ft_putchar_fd.c \
+			ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c get_next_line.c
+
+SRCS_MISC = ft_isalnum.c ft_isprint.c ft_isalpha.c ft_atoi.c ft_isascii.c \
+			ft_isdigit.c ft_itoa.c ft_pow.c ft_itoa_base.c is_neg.c
+
+SRCS = $(SRCS_STR) $(SRCS_LST) $(SRCS_IO) $(SRCS_MEM) $(SRCS_MISC) 
+
+OBJS = $(SRCS:%.c=objs/%.o)
+
+objs/%.o : srcs/str/%.c
+	@echo "compilation : " $*
+	@gcc $(FLAGS) -c $^ -o $@ -I.
+
+objs/%.o : srcs/lst/%.c
+	@echo "compilation : " $*
+	@gcc $(FLAGS) -c $^ -o $@ -I.
+
+objs/%.o : srcs/io/%.c
+	@echo "compilation : " $*
+	@gcc $(FLAGS) -c $^ -o $@ -I.
+
+objs/%.o : srcs/mem/%.c
+	@echo "compilation : " $*
+	@gcc $(FLAGS) -c $^ -o $@ -I.
+
+objs/%.o : srcs/misc/%.c
+	@echo "compilation : " $*
+	@gcc $(FLAGS) -c $^ -o $@ -I.
 
 $(NAME): $(OBJS)
-	ar rc $(NAME) $(OBJS)
-	ranlib $(NAME)
+	@echo "compilation : " $(NAME)
+	@ar rc $(NAME) $(OBJS)
+	@ranlib $(NAME)
 
-%.o: %.c
-	gcc $(FLAG) -c $< -I libft.h
+all: $(NAME)
 
 clean:
 	rm -f $(OBJS)

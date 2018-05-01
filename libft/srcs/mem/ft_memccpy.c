@@ -23,7 +23,7 @@ void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
 		{
 			((t_u_char *)dst)[i] = (t_u_char)c;
 			i++;
-			return (&dst[i]);
+			return (&((t_u_char *)dst)[i]);
 		}
 		((t_u_char *)dst)[i] = ((t_u_char *)src)[i];
 		i++;
