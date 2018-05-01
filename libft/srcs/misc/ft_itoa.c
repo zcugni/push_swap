@@ -12,17 +12,14 @@
 
 #include "libft.h"
 
-static void	divide(int n, t_list **result)
+static void	divide(long long n, t_list **result)
 {
-	char	tmp_char;
-	int		tmp_int;
+	char		tmp_char;
+	long long	tmp_int;
 
 	tmp_int = n;
 	if (tmp_int == 0)
-	{
-		tmp_char = tmp_int % 10 + 48;
-		ft_lstadd(result, ft_lstnew(&tmp_char, 1));
-	}
+		ft_lstadd(result, ft_lstnew("0", 1));
 	while (tmp_int != 0)
 	{
 		if (tmp_int < 0)
@@ -36,7 +33,7 @@ static void	divide(int n, t_list **result)
 		ft_lstadd(result, ft_lstnew("-", 1));
 }
 
-char		*ft_itoa(int n)
+char		*ft_itoa(long long n)
 {
 	t_list	*result;
 	char	*res_str;
@@ -44,6 +41,6 @@ char		*ft_itoa(int n)
 	result = NULL;
 	divide(n, &result);
 	res_str = lst_to_str(result);
-	free(result);
+	lst_clr(&result);
 	return (res_str);
 }

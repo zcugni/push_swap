@@ -45,6 +45,7 @@ $(NAME_2): lmake $(OBJS_2)
 
 lmake : 
 	@$(MAKE) -C $(L_PATH)
+	
 
 clean:
 	rm -f $(OBJS_1) $(OBJS_2)

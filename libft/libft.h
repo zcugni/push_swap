@@ -17,6 +17,11 @@
 # include <string.h>
 # include <unistd.h>
 
+/* include for ft_printf */
+# include <stdarg.h>
+# include <inttypes.h>
+
+/* struct for libft */
 typedef	struct			s_trim
 {
 	int start;
@@ -30,47 +35,42 @@ typedef struct			s_list
 	struct s_list	*next;
 }						t_list;
 
+/* struct for printf */
+typedef struct	s_conv_info
+{
+	int		rest;
+	int		is_neg;
+	char	current_value;
+}				t_conv_info;
+
+typedef struct	s_result
+{
+	char	**str;
+	size_t	size;
+}				t_result;
+
+typedef struct	s_detail
+{
+	int			width;
+	int			pre;
+	t_result	*conv;
+	t_list		*info;
+	char		*ori_str;
+}				t_detail;
+
+typedef struct	s_pos
+{
+	int	start;
+	int	mid;
+	int i;
+}				t_pos;
+
 typedef unsigned char	t_u_char;
 typedef unsigned int	t_u_int;
+typedef	unsigned long long t_ull;
 
-int						ft_atoi(const char *str);
-void					ft_bzero(void *s, size_t n);
-int						ft_isascii(int c);
-int						ft_isalnum(int c);
-int						ft_isalpha(int c);
-int						ft_isdigit(int c);
-int						ft_isprint(int c);
-char					*ft_itoa(int n);
-char					*ft_itoa_base(unsigned int nb, int base, int upper);
-void					ft_lstadd(t_list **alst, t_list *new);
-void					ft_lstappend(t_list **alst, t_list *new);
-t_list					*ft_lstcpy(t_list *ori);
-void					ft_lstdel(t_list **alst, void (*del)(void *, size_t));
-void					ft_lstdelone(t_list **alst, void (*del)(void *,
-	size_t));
-t_list					*ft_lstfind(t_list *list, void *content, size_t size);
-void					ft_lstiter(t_list *lst, void (*f)(t_list *elem));
-int						ft_lstlength(t_list *lst);
-t_list					*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
-t_list					*ft_lstnew(void const *content, size_t content_size);
-void					*ft_memalloc(size_t size);
-int						ft_memcmp(const void *s1, const void *s2, size_t n);
-void					*ft_memccpy(void *dst, const void *src, int c,
-	size_t n);
-void					*ft_memchr(const void *s, int c, size_t n);
-void					*ft_memcpy(void *dst, const void *src, size_t n);
-void					ft_memdel(void **ap);
-void					*ft_memmove(void *dst, const void *src, size_t len);
-void					*ft_memset(void *b, int c, size_t len);
-long long				ft_pow(int nb, int power);
-void					ft_putchar(char c);
-void					ft_putchar_fd(char c, int fd);
-void					ft_putendl(char const *s);
-void					ft_putendl_fd(char const *s, int fd);
-void					ft_putnbr(int n);
-void					ft_putnbr_fd(int n, int fd);
-void					ft_putstr(const char *str);
-void					ft_putstr_fd(char const *s, int fd);
+
+/* ---Str--- */
 char					*ft_strcat(char *s1, const char *s2);
 char					*ft_strchr(const char *s, int c);
 int						ft_strchri(const char *s, int c);
@@ -104,9 +104,84 @@ char					*ft_strsub_free(char *s, t_u_int start, size_t len);
 char					*ft_strtrim(char const *s);
 int						ft_toupper(int c);
 int						ft_tolower(int c);
-int						is_neg(char *str);
-int						get_next_line(const int fd, char **line);
+
+
+/* ---Lst--- */
+void					ft_lstadd(t_list **alst, t_list *new);
+void					ft_lstappend(t_list **alst, t_list *new);
+t_list					*ft_lstcpy(t_list *ori);
+void					ft_lstdel(t_list **alst, void (*del)(void *, size_t));
+void					ft_lstdelone(t_list **alst, void (*del)(void *,
+	size_t));
+t_list					*ft_lstfind(t_list *list, void *content, size_t size);
+void					ft_lstiter(t_list *lst, void (*f)(t_list *elem));
+int						ft_lstlength(t_list *lst);
+t_list					*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
+t_list					*ft_lstnew(void const *content, size_t content_size);
 void					lst_clr(t_list **lst);
 char					*lst_to_str(t_list *lst);
+
+
+/* ---Io--- */
+void					ft_putchar(char c);
+void					ft_putchar_fd(char c, int fd);
+void					ft_putendl(char const *s);
+void					ft_putendl_fd(char const *s, int fd);
+void					ft_putnbr(int n);
+void					ft_putnbr_fd(int n, int fd);
+void					ft_putstr(const char *str);
+void					ft_putstr_fd(char const *s, int fd);
+int						get_next_line(const int fd, char **line);
+
+
+/* ---Mem--- */
+void					ft_bzero(void *s, size_t n);
+void					*ft_memalloc(size_t size);
+int						ft_memcmp(const void *s1, const void *s2, size_t n);
+void					*ft_memccpy(void *dst, const void *src, int c,
+	size_t n);
+void					*ft_memchr(const void *s, int c, size_t n);
+void					*ft_memcpy(void *dst, const void *src, size_t n);
+void					ft_memdel(void **ap);
+void					*ft_memmove(void *dst, const void *src, size_t len);
+void					*ft_memset(void *b, int c, size_t len);
+
+
+/* ---Ft_printf--- */
+int				ft_printf(const char *str, ...);
+void			convert(va_list ap, t_detail *conv_detail);
+char			*convert_s(char *str, int precision);
+t_result		*convert_ls(wchar_t *nb_arr);
+char			*convert_signed(long long nb);
+char			*convert_unsigned(t_ull nb);
+char			*convert_lc(wchar_t nb);
+char			*convert_c(char c);
+void			get_info(t_pos *p, t_detail *conv_detail, va_list ap);
+int				get_nb(const char *str, int *i);
+int				get_precision(const char *str, int *i);
+void			get_width_modifier(const char **str, t_list **info, int *i);
+void			add(t_detail *det, t_list **fin_lst, int add_null);
+void			act_on_flag(t_detail *conv_detail);
+void			pad_width(t_detail *conv_detail, char chara, int right);
+void			pad_precision(t_detail conv_detail, char type);
+char			*ft_itoa_base_long(unsigned long nb, int base, int upper);
+char			*ft_itoa_base_2_long(t_ull nb, int base, int upper);
+char			*ft_itoa_base_uintmax(__uintmax_t nb, int base, int upper);
+long			ft_atoi_long(char *str);
+long long		ft_atoi_2_long(char *str);
+int				display(t_list *final_lst, int error);
+
+
+/* ---Misc--- */
+int						ft_atoi(const char *str);
+int						ft_isascii(int c);
+int						ft_isalnum(int c);
+int						ft_isalpha(int c);
+int						ft_isdigit(int c);
+int						ft_isprint(int c);
+char					*ft_itoa(long long nb);
+char					*ft_itoa_base(unsigned int nb, int base, int upper);
+long long				ft_pow(int nb, int power);
+int						is_neg(char *str);
 
 #endif

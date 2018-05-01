@@ -12,6 +12,7 @@
 
 NAME = libft.a
 FLAG = -Wall -Werror -Wextra
+HEADER_PATH = .
 
 SRCS_STR = ft_strcat.c ft_strdup.c ft_strncmp.c ft_strstr.c ft_strcpy.c \
 			ft_strncat.c ft_strrchr.c ft_strncpy.c ft_strnew.c ft_strdel.c \
@@ -31,32 +32,39 @@ SRCS_MEM = ft_memmove.c ft_memchr.c ft_memcmp.c ft_memalloc.c ft_memdel.c \
 SRCS_IO = ft_putchar.c ft_putstr.c ft_putendl.c ft_putnbr.c ft_putchar_fd.c \
 			ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c get_next_line.c
 
+SRCS_FTPRINTF = convert_nb.c convert_string.c convert_all.c flag.c ft_printf.c \
+			get_info.c misc.c pad_precision.c pad_width.c
+
 SRCS_MISC = ft_isalnum.c ft_isprint.c ft_isalpha.c ft_atoi.c ft_isascii.c \
 			ft_isdigit.c ft_itoa.c ft_pow.c ft_itoa_base.c is_neg.c
 
-SRCS = $(SRCS_STR) $(SRCS_LST) $(SRCS_IO) $(SRCS_MEM) $(SRCS_MISC) 
+SRCS = $(SRCS_STR) $(SRCS_LST) $(SRCS_IO) $(SRCS_MEM) $(SRCS_FTPRINTF) $(SRCS_MISC) 
 
 OBJS = $(SRCS:%.c=objs/%.o)
 
 objs/%.o : srcs/str/%.c
 	@echo "compilation : " $*
-	@gcc $(FLAGS) -c $^ -o $@ -I.
+	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
 objs/%.o : srcs/lst/%.c
 	@echo "compilation : " $*
-	@gcc $(FLAGS) -c $^ -o $@ -I.
+	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
 objs/%.o : srcs/io/%.c
 	@echo "compilation : " $*
-	@gcc $(FLAGS) -c $^ -o $@ -I.
+	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
 objs/%.o : srcs/mem/%.c
 	@echo "compilation : " $*
-	@gcc $(FLAGS) -c $^ -o $@ -I.
+	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
+
+objs/%.o : srcs/ft_printf/%.c
+	@echo "compilation : " $*
+	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
 objs/%.o : srcs/misc/%.c
 	@echo "compilation : " $*
-	@gcc $(FLAGS) -c $^ -o $@ -I.
+	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
 $(NAME): $(OBJS)
 	@echo "compilation : " $(NAME)

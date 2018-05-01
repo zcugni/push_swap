@@ -22,7 +22,7 @@ void	swap(t_list *lst, char *to_print)
 		*((int *)lst->next->content) = *((int *)lst->content);
 		*((int *)lst->content) = tmp;
 	}
-	//printf("%s", to_print);
+	//ft_printf("%s", to_print);
 	//je suis obligee de faire un truc avec to_print pour le compilateur
 	if (to_print[0] == 't')
 		ft_putstr("plop");
