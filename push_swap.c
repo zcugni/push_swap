@@ -10,57 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//gestion des doublons
-
 #include "push_swap.h"
 
 
 #include <stdio.h>
 int nb_instruct = 0;
-
-void    debug(t_list **lst_a, t_list **lst_b)
-{
-    t_list *tmp_a;
-    t_list *tmp_b;
-    int i;
-    int len_a;
-    int len_b;
-
-    int nb_to_show = 26;
-
-    if (lst_a && *lst_a)
-    {
-        len_a = ft_lstlength(*lst_a); //a opti
-        tmp_a = *lst_a;
-        i = 0;
-        while (tmp_a)
-        {
-            if (i < nb_to_show || i >= len_a - nb_to_show)
-                printf("%i ", *((int *)tmp_a->content));
-            if (i == nb_to_show)
-                printf("... "); //a ameliorer
-            tmp_a = tmp_a->next;
-            i++;
-        }
-        printf("\n");
-    }
-    if (lst_b && *lst_b)
-    {
-        len_b = ft_lstlength(*lst_b); //a opti
-        tmp_b = *lst_b;
-        i = 0;
-        while (tmp_b)
-        {
-            if (i < nb_to_show || i > len_b - nb_to_show)
-                printf("%i ", *((int *)tmp_b->content));
-            if (i == nb_to_show)
-                printf("... "); //a ameliorer
-            tmp_b = tmp_b->next;
-            i++;
-        }
-        printf("\n");
-    }
-}
 
 void    split_b(t_list **lst_a, t_list **lst_b, int *sorted, int *next_index, int *len_b, int verbose)
 {
@@ -268,51 +222,20 @@ void get_instruct(t_list **lst_a, t_list **lst_b, int *sorted, int sorted_len, i
 
 int main(int argc, char **argv)
 {
-	int     i;
 	t_list  *lst_a;
 	t_list	*lst_b;
 	int     *sorted;
-	int     tmp;
-	int		res;
-    int     len;
-    int     j;
+    int     sorted_len;
     int     verbose;
+    int     color;
 
-	i = 1;
-	res = 1;
     lst_b = NULL;
     lst_a = NULL;
-
-    //int test = *((int *)content);
-    /*int nb = 12;
-    ft_lstappend(&lst_a, ft_lstnew(&nb, sizeof(nb)));
-    nb = 13;
-    ft_lstappend(&lst_a, ft_lstnew(&nb, sizeof(nb)));
-    printf("%i\n", *((int *)lst_a->content));
-    printf("%i\n", *((int *)lst_a->next->content));
-    swap(lst_a);
-    printf("%i\n", *((int *)lst_a->content));
-    printf("%i\n", *((int *)lst_a->next->content));
-    exit(1);*/
-
-	if (argc > 1)
-	{
-        if (ft_strcmp(argv[i], "-v") == 0)
-            verbose = 1;
-        else
-            verbose = 0;
-		sorted = malloc((argc - 1 - verbose) * sizeof(int));
-		while (argv[i + verbose])
-		{
-			tmp = ft_atoi(argv[i + verbose]);
-			sorted[i - 1] = tmp;
-			i++;
-			ft_lstappend(&lst_a, ft_lstnew(&tmp, sizeof(tmp)));
-		}
-		quicksort(sorted, i - 1);
-        len = i - 1;
-        j = 0;
-		get_instruct(&lst_a, &lst_b, sorted, len, verbose);
+    sorted = NULL;
+    if (valid_input(argc, argv, &sorted, &sorted_len, &lst_a, &verbose, &color))
+    {
+        get_instruct(&lst_a, &lst_b, sorted, sorted_len, verbose);
+        //faire ca mieux
 		while (lst_a)
 		{
 			printf("%i ", *((int *)lst_a->content));
@@ -321,5 +244,7 @@ int main(int argc, char **argv)
 		printf("\n");
         printf("nb_instruct : %i\n", nb_instruct);
     }
+	else
+        return (display_error());
 	return (0);    
 }

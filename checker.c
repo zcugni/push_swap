@@ -12,33 +12,7 @@
 
 # include "push_swap.h"
 
-void	display_state(t_list *lst_a, t_list *lst_b)
-{
-	t_list *tmp_a;
-	t_list *tmp_b;
-
-	tmp_a = lst_a;
-	tmp_b = lst_b;
-	ft_putstr("A : ");
-	while (tmp_a)
-	{
-		ft_putnbr(*((int *)tmp_a->content));
-		if (tmp_a->next)
-				ft_putstr(" -> ");
-		tmp_a = tmp_a->next;
-	}
-	ft_putstr("\nB : ");
-	while (tmp_b)
-	{
-		ft_putnbr(*((int *)tmp_b->content));
-		if (tmp_b->next)
-			ft_putstr(" -> ");
-		tmp_b = tmp_b->next;
-	}
-	ft_putstr("\n\n");
-}
-
-void	switch_op(t_list *lst_a, t_list *lst_b)
+int	switch_op(t_list **lst_a, t_list **lst_b)
 {
 	char    **instruction;
 	int     up;
@@ -53,66 +27,69 @@ void	switch_op(t_list *lst_a, t_list *lst_b)
 			up = 1;
 		if (ft_strcmp(instruction[0], "sa") == 0 || ft_strcmp(instruction[0], "ss") == 0 || ft_strcmp(instruction[0], "sb") == 0)
 		{
-			if (ft_strchr(instruction[0], 'a') || ft_strcmp(instruction[0], "ss") == 0)
-				swap(lst_a, ""); //je suis pas sure que ca marche sans rien afficher en vrai
-			if (ft_strchr(instruction[0], 'b') || ft_strcmp(instruction[0], "ss") == 0)
-				swap(lst_b, "");
+			if (!ft_strchr(instruction[0], 'a'))
+				swap(*lst_b, ""); //je suis pas sure que ca marche sans rien afficher en vrai
+			if (!ft_strchr(instruction[0], 'b'))
+				swap(*lst_a, "");
 		}
 		else if (up > -1)
 		{
 			if (!ft_strchr(instruction[0], 'a'))
-				rotate(up, &lst_b, "");
+				rotate(up, lst_b, "");
 			if (!ft_strchr(instruction[0], 'b'))
-				rotate(up, &lst_a, "");
+				rotate(up, lst_a, "");
 		}
 		else if (ft_strcmp(instruction[0], "pa") == 0)
-			push(&lst_a, &lst_b, "");
+			push(lst_a, lst_b, "");
 		else if (ft_strcmp(instruction[0], "pb") == 0)
-			push(&lst_b, &lst_a, "");
+			push(lst_b, lst_a, "");
 		else
-			ft_putstr_fd("Error\n", 2); //on dirait qu'il passe une fois de trop dans get_next_line et du coup 1 fois dans error
-		display_state(lst_a, lst_b);
+			return (0); //on dirait qu'il passe une fois de trop dans get_next_line et du coup 1 fois dans error
 		up = -1;
 	}
+	return (1);
 }
 
 int main(int argc, char **argv)
 {
-	int     i;
 	t_list  *lst_a;
 	t_list  *lst_b;
 	t_list	*tmp_lst;
-	int		tmp_nb;
-	int		sorted;
+	int		is_sorted;
+	int		*sorted;
+	int		verbose;
+	int		color;
+	int		sorted_len;
 
 	//gestion des doublons ?
-	//Si push_swap ecrit error sur la sortie d'erreur, je devrais lire la-bas avant d'essayer de verifier les instructions non ?
 
 	lst_b = NULL;
-	sorted = 1;
-	i = 1;
-	if (argc > 1)
+	lst_a = NULL;
+	sorted = NULL;
+	is_sorted = 1;
+	if (valid_input(argc, argv, &sorted, &sorted_len, &lst_a, &verbose, &color))
 	{
-		while (argv[i])
+		if (switch_op(&lst_a, &lst_b))
 		{
-			tmp_nb = ft_atoi(argv[i++]);
-			ft_lstappend(&lst_a, ft_lstnew(&tmp_nb, sizeof(tmp_nb)));
-		}
-		switch_op(lst_a, lst_b);
-		if (!lst_b)
-		{
-			tmp_lst = lst_a;
-			while (tmp_lst->next && sorted)
+			if (!lst_b)
 			{
-				if (*((int *)tmp_lst->content) > *((int *)tmp_lst->next->content))
-					sorted = 0;
-				tmp_lst = tmp_lst->next;
+				tmp_lst = lst_a;
+				while (tmp_lst->next && is_sorted)
+				{
+					if (*((int *)tmp_lst->content) > *((int *)tmp_lst->next->content))
+						is_sorted = 0;
+					tmp_lst = tmp_lst->next;
+				}
 			}
+			if (lst_b || !sorted)	
+				ft_putstr("KO\n");
+			else
+				ft_putstr("OK\n");
 		}
-		if (lst_b || !sorted)	
-			ft_putstr("KO\n");
 		else
-			ft_putstr("OK\n");
+			display_error();
 	}
+	else
+		return (display_error());
 	return (0);
 }
