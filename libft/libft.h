@@ -114,6 +114,7 @@ void					ft_lstdel(t_list **alst, void (*del)(void *, size_t));
 void					ft_lstdelone(t_list **alst, void (*del)(void *,
 	size_t));
 t_list					*ft_lstfind(t_list *list, void *content, size_t size);
+int     				lst_findi(t_list *list, void *content, size_t size);
 void					ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 int						ft_lstlength(t_list *lst);
 t_list					*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
@@ -166,7 +167,7 @@ void			pad_width(t_detail *conv_detail, char chara, int right);
 void			pad_precision(t_detail conv_detail, char type);
 char			*ft_itoa_base_long(unsigned long nb, int base, int upper);
 char			*ft_itoa_base_2_long(t_ull nb, int base, int upper);
-char			*ft_itoa_base_uintmax(__uintmax_t nb, int base, int upper);
+char			*ft_itoa_base_uintmax(uintmax_t nb, int base, int upper);
 long			ft_atoi_long(char *str);
 long long		ft_atoi_2_long(char *str);
 int				display(t_list *final_lst, int error);

@@ -28,8 +28,26 @@ void    split_b(t_list **lst_a, t_list **lst_b, int *sorted, int *next_index, in
     i = 0;
     do_ra = 0;
     nb_to_send = *len_b / 2; //je pourrais utilise le half added en vrai
+
+    //int do_sa = 0;
+   // int do_sb = 0;
     while (i < nb_to_send)
     {
+        /*if (*((int *)(*lst_a)->content) > *((int *)(*lst_a)->next->content) && *((int *)(*lst_a)->next->content) != sorted[0])
+            do_sa = 1;
+        if (*((int *)(*lst_b)->content) < *((int *)(*lst_b)->next->content))
+            do_sb = 1;
+        if (do_sa && do_sb)
+            swap_both(*lst_a, *lst_b, "ss\n");
+        else if (do_sa)
+            swap(*lst_a, "sa\n");
+        else if (do_sb)
+            swap(*lst_b, "sb\n");
+        if (do_sa || do_sb)
+            nb_instruct++;
+        do_sa = 0;
+        do_sb = 0;*/
+
         if (*((int *)(*lst_b)->content) >= sorted[pivot_min] || *((int *)(*lst_b)->content) == sorted[*next_index])
         {
             if (do_ra)
@@ -51,6 +69,11 @@ void    split_b(t_list **lst_a, t_list **lst_b, int *sorted, int *next_index, in
         }
         else //comparer avec et sans le define_direction, c'est pas forcement opti comme je l'ai fait la 
         {
+            int index = lst_findi(*lst_b, &(sorted[*next_index]), sizeof(sorted[*next_index]));
+            
+
+
+            
             //define_direction(lst_b, pivot_min, sorted[*next_index], *len_b);
             if (do_ra)
             {
@@ -59,6 +82,7 @@ void    split_b(t_list **lst_a, t_list **lst_b, int *sorted, int *next_index, in
             }
             else
                 rotate(1, lst_b, "rb\n");
+            //swap si je suis le next de next_desired ?
         }
         nb_instruct++;
         if (verbose)
@@ -76,7 +100,7 @@ void    split_b(t_list **lst_a, t_list **lst_b, int *sorted, int *next_index, in
     }
 }
 
-void    define_direction(t_list **lst_b, int pivot_min, int desired, int len_b)
+/*void    define_direction(t_list **lst_b, int pivot_min, int desired, int len_b)
 {
     t_list *tmp;
     int i;
@@ -103,14 +127,14 @@ void    define_direction(t_list **lst_b, int pivot_min, int desired, int len_b)
     //je sais pas si je devrais mettre une priorite sur le next_index ?
     if (last != 0 && len_b - last < first) //logiquement je devrais au moins ajouter une punition de +1
     {
-        /*printf("first, last, len_b, len - last, min, desired : %i, %i, %i, %i, %i, %i\n", first, last, len_b, len_b - last, pivot_min, desired);
+        printf("first, last, len_b, len - last, min, desired : %i, %i, %i, %i, %i, %i\n", first, last, len_b, len_b - last, pivot_min, desired);
         debug(NULL, lst_b, 1);
-        printf("\n");*/
+        printf("\n");
         rotate(0, lst_b, "rrb\n");
     }
     else
         rotate(1, lst_b, "rb\n");
-}
+}*/
 
 void    send_half(t_list **lst_a, t_list **lst_b, int *sorted, int pivot_min, int nb_to_send, int *next_index, int *len_b, int verbose)
 {
@@ -119,6 +143,14 @@ void    send_half(t_list **lst_a, t_list **lst_b, int *sorted, int pivot_min, in
     i = 0;
     while (i < nb_to_send)
     {
+        //c'est un cas tellement particulier qu'il apparait jamais meme s'il est logique
+        //pas de risque de segfault si next_index est le max ?
+        /*if (*next_index != 0 && *((int *)(*lst_a)->next->content) == sorted[*next_index] && *((int *)(*lst_a)->content) == sorted[*next_index + 1])
+        {
+            printf("yup\n");
+            exit(1);
+            swap(*lst_a, "sa\n");
+        }*/
         if (*((int *)(*lst_a)->content) == sorted[*next_index] && *next_index != 0)
         {
             rotate(1, lst_a, "ra\n");
@@ -142,19 +174,18 @@ void    send_half(t_list **lst_a, t_list **lst_b, int *sorted, int pivot_min, in
 void    send_in_b(t_list **lst_a, t_list **lst_b, int diff, int *sorted, int *next_index, int *len_b, int verbose)
 {
     int i;
-    
+
     i = 0;
     while (i < diff)
     {
-        //y'a pas moyen de gagner des trucs en checkant si on vient pas d'envoyer le prochain ?
-        //
-
-        /*if (*((int *)(*lst_a)->next->content) == sorted[*next_index])
+        //je risque pas d'avoir un segfault si next_index est le max ?
+        if (*((int *)(*lst_a)->next->content) == sorted[*next_index] && *((int *)(*lst_a)->content) == sorted[*next_index + 1])
         {
-            if ()
-        }*/
-        if (*((int *)(*lst_a)->next->content) == sorted[*next_index])
             swap(*lst_a, "sa\n");
+            nb_instruct++;
+            if (verbose)
+                debug(lst_a, lst_b);
+        }
         if (*((int *)(*lst_a)->content) == sorted[*next_index])
         {
             rotate(1, lst_a, "ra\n");
@@ -176,18 +207,35 @@ void    real_qs_lst(t_list **lst_a, t_list **lst_b, int *sorted, int *next_index
 {
     int half;
 
+    printf("debut - desired : %i\n", sorted[*next_index]);
+    //printf("nb_instruct : %i\n", nb_instruct);
+    debug(lst_a, lst_b);
     if (*len_b > 9)
     {
         half = *len_b / 2;
         ft_lstadd(lst_halves, ft_lstnew(&half, sizeof(half)));
+        //printf("(split :)\n");
+        //printf("avant split : \n");
+        //debug(lst_a, lst_b);
         split_b(lst_a, lst_b, sorted, next_index, len_b, verbose);
+        //printf("apres split : \n");
+        //debug(lst_a, lst_b);
+        //printf("what ?\n");
         real_qs_lst(lst_a, lst_b, sorted, next_index, len_b, lst_halves, verbose);
+        printf("avant send_in_b :\n");
+        //debug(lst_a, lst_b);
         send_in_b(lst_a, lst_b, ft_pop_value(lst_halves), sorted, next_index, len_b, verbose);
         real_qs_lst(lst_a, lst_b, sorted, next_index, len_b, lst_halves, verbose);
     }
     else
     {
+        printf("sort_batch - desired : %i\n", sorted[*next_index]);
+        //debug(lst_a, lst_b);
+        //printf("nb_instruct : %i\n", nb_instruct);
         sort_batch(lst_a, lst_b, sorted, &nb_instruct, next_index, len_b, verbose);
+        printf("fini :\n");
+        debug(lst_a, lst_b);
+        //printf("nb_instruct : %i\n", nb_instruct);
     }
 }
 
@@ -234,6 +282,7 @@ int main(int argc, char **argv)
     sorted = NULL;
     if (valid_input(argc, argv, &sorted, &sorted_len, &lst_a, &verbose, &color))
     {
+        debug(&lst_a, NULL);
         get_instruct(&lst_a, &lst_b, sorted, sorted_len, verbose);
         //faire ca mieux
 		while (lst_a)
