@@ -19,6 +19,7 @@ t_list	*ft_pop(t_list **lst);
 int		ft_pop_value(t_list **lst);
 
 void	swap(t_list *lst, char *to_print);
+void	swap_both(t_list *lst_a, t_list *lst_b, char *to_print);
 void	push(t_list **lst_receiver, t_list **lst_giver, char *to_print);
 void	rotate(int up, t_list **lst, char *to_print);
 void	rotate_both(int up, t_list **lst_a, t_list **lst_b, char *to_print);

@@ -11,7 +11,7 @@ void    debug(t_list **lst_a, t_list **lst_b)
     int len_a;
     int len_b;
 
-    int nb_to_show = 26;
+    int nb_to_show = 101;
 
     if (lst_a && *lst_a)
     {
@@ -22,7 +22,7 @@ void    debug(t_list **lst_a, t_list **lst_b)
         {
             if (i < nb_to_show || i >= len_a - nb_to_show)
                 printf("%i ", *((int *)tmp_a->content));
-            if (i == nb_to_show)
+             if (i == nb_to_show)
                 printf("... "); //a ameliorer
             tmp_a = tmp_a->next;
             i++;
@@ -45,6 +45,7 @@ void    debug(t_list **lst_a, t_list **lst_b)
         }
         printf("\n");
     }
+	printf("\n");
 }
 
 int	quicksort(int *arr, int len) //a ameliorer
@@ -79,7 +80,6 @@ int	quicksort(int *arr, int len) //a ameliorer
 			arr[1] = tmp;
 			if (!quicksort(arr, len))
 				return (0);
-			
 		}
 		else
 		{
@@ -102,10 +102,19 @@ void	sort_batch(t_list **lst_a, t_list **lst_b, int *sorted, int *nb_instruct, i
 	int do_ra = 0;
 
 	i = 0;
+
 	if (*lst_b)
 	{
 		while (*lst_b)
 		{
+			/// a opti
+			while (*((int *)(*lst_a)->content) == sorted[*next_index] && *((int *)(*lst_a)->content) != sorted[0])
+			{
+				rotate(1, lst_a, "ra\n");
+				(*nb_instruct)++;
+				(*next_index)++;
+				do_ra = 0;
+			}
 			if (*((int *)(*lst_b)->content) == sorted[*next_index])
 			{
 				while ((*((int *)(*lst_a)->content) <= sorted[*next_index] && *((int *)(*lst_a)->content) != sorted[0])
