@@ -1,6 +1,0 @@
--doublons
--ca segfault sur une liste a 2 elements
--mes rb/ra ne sont pas protege pour quand il n'y a qu'un seul element 
-
-
--souvent je deplace les trucs alors qu'ils sont deja dans la bonne position, c'est pas genial

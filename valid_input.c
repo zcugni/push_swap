@@ -1,6 +1,6 @@
 #include "push_swap.h"
 
-int     is_int(char *str)
+static int     is_int(char *str)
 {
     int i;
     int is_neg;
@@ -35,7 +35,7 @@ int    display_error()
 
 #include <stdio.h>
 
-int     valid_input(int argc, char **argv, int **sorted, int *sorted_len, t_list **lst_a, int *verbose, int *color)
+int     valid_input(int argc, char **argv, int **sorted, int *sorted_len, t_lst_inf *lst_inf, int *verbose, int *color)
 {
     int i;
     int tmp_nb;
@@ -65,7 +65,7 @@ int     valid_input(int argc, char **argv, int **sorted, int *sorted_len, t_list
                 if (tmp_nb < (*sorted)[i - *color - *verbose - 2])
                     already_sorted = 0;
                 (*sorted)[i - *color - *verbose - 1] = tmp_nb;
-                ft_lstappend(lst_a, ft_lstnew(&tmp_nb, sizeof(tmp_nb)));
+                ft_lstappend(&(lst_inf->lst_a), ft_lstnew(&tmp_nb, sizeof(tmp_nb)));
             }
             else
                 return (0);

@@ -35,20 +35,3 @@ int		ft_pop_value(t_list **lst)
 	free(tmp);
 	return (value);
 }
-
-int		ft_lstfind_i(t_list *lst, int nb)
-{
-	t_list *tmp;
-	int		i;
-
-	tmp = lst;
-	i = 0;
-	while (tmp)
-	{
-		if (*((int *)tmp->content) == nb)
-			return (i);
-		tmp = tmp->next;
-		i++;
-	}
-	return (-1);
-}

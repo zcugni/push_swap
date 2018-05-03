@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../libft.h"
 
 static char	*set_value(int upper, int rest)
 {
@@ -76,7 +76,7 @@ char		*ft_itoa_base_2_long(unsigned long long nb, int base, int upper)
 	return (res);
 }
 
-char		*ft_itoa_base_uintmax(__uintmax_t nb, int base, int upper)
+char		*ft_itoa_base_uintmax(uintmax_t nb, int base, int upper)
 {
 	char	*res;
 	int		rest;

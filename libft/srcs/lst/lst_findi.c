@@ -12,13 +12,13 @@
 
 #include "../../libft.h"
 
-int     ft_lstfindi(t_list *list, void *content, size_t size)
+int     lst_findi(t_list *list, void *content, size_t size)
 {
 	t_list *tmp;
     int i;
 
 	tmp = list;
-    i = 0;
+    i = 1;
 	while (tmp)
 	{
 		if (tmp->content)
