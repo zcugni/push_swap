@@ -54,11 +54,7 @@ void	    sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct, in
 					if (verbose)
 						debug(lst_inf);
 				}
-				//printf("before push\n");
-				//debug(lst_a, lst_b);
 				push(&lst_inf->lst_a, &lst_inf->lst_b, "pa\n");
-				//printf("after push\n");
-				//debug(lst_a, lst_b);
 				lst_inf->len_b--;
 				i++;
 				do_ra = 1;
@@ -66,34 +62,24 @@ void	    sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct, in
 			}
 			else
 			{
-				//debug(lst_a, lst_b);
-				//dans l'immediat c'est plus opti sans mais je devrais pouvoir l'integrer d'une facon ou d'une autre
-				/*if (*((int *)(*lst_b)->content) > *((int *)(*lst_b)->next->content))
-					swap(*lst_b, "sb\n");
+				dist = lst_findi(lst_inf->lst_b, &(tab_inf->sorted[tab_inf->next_index]), sizeof(tab_inf->sorted[tab_inf->next_index]));
+				if (dist > lst_inf->len_b / 2 + lst_inf->len_b / 2 / 2 + 1)
+					rotate(0, &lst_inf->lst_b, "rrb\n");
 				else
-				{*/
-					dist = lst_findi(lst_inf->lst_b, &(tab_inf->sorted[tab_inf->next_index]), sizeof(tab_inf->sorted[tab_inf->next_index]));
-					//if (dist > *len_b / 2 - *len_b / 2 / 2)
-					if (dist == lst_inf->len_b)
-						rotate(0, &lst_inf->lst_b, "rrb\n");
-					else
+				{
+					if (do_ra)
 					{
-						if (do_ra)
-						{
-							rotate_both(1, &lst_inf->lst_a, &lst_inf->lst_b, "rr\n");
-							do_ra = 0;
-						}
-						else
-							rotate(1, &lst_inf->lst_b, "rb\n");
+						rotate_both(1, &lst_inf->lst_a, &lst_inf->lst_b, "rr\n");
+						do_ra = 0;
 					}
-				//}
+					else
+						rotate(1, &lst_inf->lst_b, "rb\n");
+				}
 			}
 			(*nb_instruct)++;
 			if (verbose)
 				debug(lst_inf);
 		}
-		//printf("interne rotate\n");
-		//debug(lst_a, lst_b);
 		rotate(1, &lst_inf->lst_a, "ra\n");
 		(*nb_instruct)++;
 		if (verbose)

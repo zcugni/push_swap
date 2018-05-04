@@ -24,25 +24,25 @@ void    real_qs_lst(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_list **lst_halves,
     {
         half = lst_inf->len_b / 2;
         ft_lstadd(lst_halves, ft_lstnew(&half, sizeof(half)));
-        printf("avant split\n");
+        //printf("\033[31mavant split - half, desired : %i, %i\n\033[0m", half, tab_inf->sorted[tab_inf->next_index]);
         //debug(lst_inf);
         split_b(lst_inf, tab_inf, verbose, &nb_instruct);
-        printf("apres split\n");
+        //printf("apres split\n");
         //debug(lst_inf);
         real_qs_lst(lst_inf, tab_inf, lst_halves, verbose);
-        printf("avant send - half : %i\n", *((int *)(*lst_halves)->content));
+        //printf("avant send - half : %i\n", *((int *)(*lst_halves)->content));
         //debug(lst_inf);
         send_in_b(lst_inf, ft_pop_value(lst_halves), tab_inf, verbose, &nb_instruct);
-        printf("apres send\n");
+        //printf("apres send\n");
         //debug(lst_inf);
         real_qs_lst(lst_inf, tab_inf, lst_halves, verbose);
     }
     else
     {
-        printf("avant sort");
-        debug(lst_inf);
+        //printf("avant sort - desired : %i\n", tab_inf->sorted[tab_inf->next_index]);
+        //debug(lst_inf);
         sort_batch(lst_inf, tab_inf, &nb_instruct, verbose);
-        printf("apres sort");
+        //printf("apres sort\n");
         //debug(lst_inf);
     }
 }
@@ -57,15 +57,8 @@ void get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int verbose)
     if (tab_inf->sorted_len > 9)
     {
         send_half(lst_inf, tab_inf, 0, tab_inf->sorted_len / 2, verbose, &nb_instruct);
-        debug(lst_inf);
-        printf("plop\n");
         real_qs_lst(lst_inf, tab_inf, &lst_halves, verbose);
-        printf("yo\n");
-        //printf("desired : %i\n", sorted[next_index]);
-        //debug(lst_inf);
         send_half(lst_inf, tab_inf, tab_inf->sorted_len / 2, tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2, verbose, &nb_instruct);
-        /*debug(lst_inf);
-        printf("\n");*/
         real_qs_lst(lst_inf, tab_inf, &lst_halves, verbose);
     }
     else

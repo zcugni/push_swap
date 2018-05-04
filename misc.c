@@ -11,7 +11,7 @@ void    debug(t_lst_inf *lst_inf)
     int len_a;
     int len_b;
 
-    int nb_to_show = 20;
+    int nb_to_show = 101;
 
     if (lst_inf->lst_a)
     {

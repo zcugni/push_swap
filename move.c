@@ -12,11 +12,14 @@
 
 #include "push_swap.h"
 
+#include <stdio.h>
+
 void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int verbose, int *nb_instruct)
 {
     int i_send;
     int i_rotate;
     int nb_to_send;
+    int max_to_rotate;
     int do_ra; // je pourrais faire sans cette variable mais elle rends le code beaucoup plus lisible
     int pivot_min;
 
@@ -25,12 +28,12 @@ void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int verbose, int *nb_ins
     i_rotate = 0;
     do_ra = 0;
     nb_to_send = lst_inf->len_b / 2; //je pourrais utilise le half added en vrai
-
+    max_to_rotate = lst_inf->len_b - nb_to_send;
     while (i_send < nb_to_send)
     {
         if (*((int *)lst_inf->lst_b->content) >= tab_inf->sorted[pivot_min] || *((int *)lst_inf->lst_b->content) == tab_inf->sorted[tab_inf->next_index])
         {
-            if (do_ra && i_rotate <= nb_to_send - 1)
+            if (do_ra && i_rotate < max_to_rotate)
             {
                 rotate(1, &lst_inf->lst_a, "ra\n");
                 do_ra = 0;
@@ -43,7 +46,7 @@ void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int verbose, int *nb_ins
             {
                 if (*((int *)lst_inf->lst_a->content) < tab_inf->sorted[pivot_min])
                     i_send--;
-                if (i_rotate <= nb_to_send - 1)
+                if (i_rotate < max_to_rotate)
                     tab_inf->next_index++;
                 do_ra = 1;
             }
@@ -54,11 +57,11 @@ void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int verbose, int *nb_ins
         else
         {
             int index = lst_findi(lst_inf->lst_b, &(tab_inf->sorted[tab_inf->next_index]), sizeof(tab_inf->sorted[tab_inf->next_index]));
-            if (index > lst_inf->len_b / 2 + lst_inf->len_b / 2 / 2) //si je rajoute -1 c'est des fois plus opti
+            if (index > lst_inf->len_b / 2 + lst_inf->len_b / 2 / 2 + 3)
                 rotate(0, &lst_inf->lst_b, "rrb");
             else
             {
-                if (do_ra && i_rotate <= nb_to_send - 1)
+                if (do_ra && i_rotate < max_to_rotate)
                 {
                     rotate_both(1, &lst_inf->lst_a, &lst_inf->lst_b, "rr\n");
                     do_ra = 0;
@@ -79,6 +82,8 @@ void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int verbose, int *nb_ins
         (*next_index)--;
     }*/
     //je devrais pas faire une verif ou je tourne lst_a avant dans ce while ?
+    //printf("interne\n");
+    //debug(lst_inf);
     while (lst_inf->lst_b && *((int *)lst_inf->lst_b->content) == tab_inf->sorted[tab_inf->next_index])
     {
         push(&lst_inf->lst_a, &lst_inf->lst_b, "pa\n");
