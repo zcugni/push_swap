@@ -16,7 +16,7 @@
 #include <stdio.h>
 int nb_instruct = 0;
 
-void    real_qs_lst(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_list **lst_halves, int verbose)
+void    real_qs_lst(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_list **lst_halves, t_param param)
 {
     int half;
 
@@ -25,29 +25,30 @@ void    real_qs_lst(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_list **lst_halves,
         half = lst_inf->len_b / 2;
         ft_lstadd(lst_halves, ft_lstnew(&half, sizeof(half)));
         //printf("\033[31mavant split - half, desired : %i, %i\n\033[0m", half, tab_inf->sorted[tab_inf->next_index]);
-        //debug(lst_inf);
-        split_b(lst_inf, tab_inf, verbose, &nb_instruct);
+        //printf("avant split\n");
+        //show_state(lst_inf, param);
+        split_b(lst_inf, tab_inf,  param, &nb_instruct);
         //printf("apres split\n");
-        //debug(lst_inf);
-        real_qs_lst(lst_inf, tab_inf, lst_halves, verbose);
+        //show_state(lst_inf, param);
+        real_qs_lst(lst_inf, tab_inf, lst_halves,  param);
         //printf("avant send - half : %i\n", *((int *)(*lst_halves)->content));
-        //debug(lst_inf);
-        send_in_b(lst_inf, ft_pop_value(lst_halves), tab_inf, verbose, &nb_instruct);
+        //show_state(lst_inf, param);
+        send_in_b(lst_inf, ft_pop_value(lst_halves), tab_inf,  param, &nb_instruct);
         //printf("apres send\n");
-        //debug(lst_inf);
-        real_qs_lst(lst_inf, tab_inf, lst_halves, verbose);
+        //show_state(lst_inf, param);
+        real_qs_lst(lst_inf, tab_inf, lst_halves,  param);
     }
     else
     {
         //printf("avant sort - desired : %i\n", tab_inf->sorted[tab_inf->next_index]);
-        //debug(lst_inf);
-        sort_batch(lst_inf, tab_inf, &nb_instruct, verbose);
+        //show_state(lst_inf, param);
+        sort_batch(lst_inf, tab_inf, param, &nb_instruct);
         //printf("apres sort\n");
-        //debug(lst_inf);
+        //show_state(lst_inf, param);
     }
 }
 
-void get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int verbose)
+void get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 {
     t_list *lst_halves;
 
@@ -56,10 +57,16 @@ void get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int verbose)
     lst_inf->len_b = 0;
     if (tab_inf->sorted_len > 9)
     {
-        send_half(lst_inf, tab_inf, 0, tab_inf->sorted_len / 2, verbose, &nb_instruct);
-        real_qs_lst(lst_inf, tab_inf, &lst_halves, verbose);
-        send_half(lst_inf, tab_inf, tab_inf->sorted_len / 2, tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2, verbose, &nb_instruct);
-        real_qs_lst(lst_inf, tab_inf, &lst_halves, verbose);
+        send_half(lst_inf, tab_inf, 0, tab_inf->sorted_len / 2,  param, &nb_instruct);
+        //printf("send_half :\n");
+        //show_state(lst_inf, param);
+        real_qs_lst(lst_inf, tab_inf, &lst_halves,  param);
+        //printf("qs :\n");
+        //show_state(lst_inf, param);
+        send_half(lst_inf, tab_inf, tab_inf->sorted_len / 2, tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2,  param, &nb_instruct);
+        //printf("send_half :\n");
+        //show_state(lst_inf, param);
+        real_qs_lst(lst_inf, tab_inf, &lst_halves,  param);
     }
     else
     {
@@ -70,17 +77,16 @@ void get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int verbose)
 
 int main(int argc, char **argv)
 {
-    int     verbose;
-    int     color;
-    t_lst_inf lst_inf;
-    t_tab_inf tab_inf;
+    t_param     param;
+    t_lst_inf   lst_inf;
+    t_tab_inf   tab_inf;
 
     lst_inf.lst_b = NULL;
     lst_inf.lst_a = NULL;
-    if (valid_input(argc, argv, &tab_inf, &(lst_inf.lst_a), &verbose, &color))
+    if (valid_input(argc, argv, &tab_inf, &(lst_inf.lst_a), &param))
     {
-        debug(&lst_inf);
-        get_instruct(&lst_inf, &tab_inf, verbose);
+        //show_state(&lst_inf, param);
+        get_instruct(&lst_inf, &tab_inf, param);
         //faire ca mieux
 		while (lst_inf.lst_a)
 		{

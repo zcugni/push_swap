@@ -1,196 +1,43 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   sort.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/05/03 22:35:18 by zcugni            #+#    #+#             */
-/*   Updated: 2018/05/03 22:35:19 by zcugni           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "push_swap.h"
 
-
-#include <stdio.h>
-
-void	    sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct, int verbose)
+void	    sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *nb_instruct)
 {
-	int i;
-	int dist;
-	int do_ra = 0;
+	int do_ra;
 
-	i = 0;
-
+	do_ra = 0;
 	if (lst_inf->lst_b)
 	{
-		//avancer le next_index pour qu'il commence avec celui qui est dans b
-		/*while (*((int *)(*lst_a)->content) == sorted[*next_index] && *((int *)(*lst_a)->content) != sorted[0])
+		while (get_int(lst_inf, 'a') == get_desired(tab_inf) && get_int(lst_inf, 'a') != tab_inf->sorted[0])
 		{
-			(*next_index)++;
-			do_ra = 1;
-		}*/
+			tab_inf->next_index++;
+			rotate(1, &lst_inf->lst_a, "ra\n");
+			(*nb_instruct)++;
+			//if param.verbose
+		}
 		while (lst_inf->lst_b)
 		{
-			//printf("interne\n");
-			//debug(lst_a, lst_b);
-			/// a opti
-			//printf("lst_a : %i\n", *((int *)lst_inf->lst_a->content));
-			while (*((int *)lst_inf->lst_a->content) == tab_inf->sorted[tab_inf->next_index] && *((int *)lst_inf->lst_a->content) != tab_inf->sorted[0])
+			if (get_int(lst_inf, 'b') == get_desired(tab_inf))
 			{
-				rotate(1, &lst_inf->lst_a, "ra\n");
-				(*nb_instruct)++;
-				tab_inf->next_index++;
-				do_ra = 0;
-			}
-			if (*((int *)lst_inf->lst_b->content) == tab_inf->sorted[tab_inf->next_index])
-			{
-				while ((*((int *)lst_inf->lst_a->content) <= tab_inf->sorted[tab_inf->next_index] && *((int *)lst_inf->lst_a->content) != tab_inf->sorted[0])
-				|| (*((int *)lst_inf->lst_a->content) <= tab_inf->sorted[tab_inf->next_index] && *((int *)lst_inf->lst_b->content) == tab_inf->sorted[1]))
+				while (get_int(lst_inf, 'a') < get_desired(tab_inf) && get_int(lst_inf, 'a') != tab_inf->sorted[0])
 				{
 					rotate(1, &lst_inf->lst_a, "ra\n");
 					(*nb_instruct)++;
-					if (verbose)
-						debug(lst_inf);
+					if (param.verbose)
+						show_state(lst_inf, param);
 				}
-				push(&lst_inf->lst_a, &lst_inf->lst_b, "pa\n");
-				lst_inf->len_b--;
-				i++;
+				push(lst_inf, "pa\n");
 				do_ra = 1;
 				tab_inf->next_index++;
 			}
 			else
-			{
-				dist = lst_findi(lst_inf->lst_b, &(tab_inf->sorted[tab_inf->next_index]), sizeof(tab_inf->sorted[tab_inf->next_index]));
-				if (dist > lst_inf->len_b / 2 + lst_inf->len_b / 2 / 2 + 1)
-					rotate(0, &lst_inf->lst_b, "rrb\n");
-				else
-				{
-					if (do_ra)
-					{
-						rotate_both(1, &lst_inf->lst_a, &lst_inf->lst_b, "rr\n");
-						do_ra = 0;
-					}
-					else
-						rotate(1, &lst_inf->lst_b, "rb\n");
-				}
-			}
+				choose_rotate(lst_inf, tab_inf, 1, &do_ra, NULL);
 			(*nb_instruct)++;
-			if (verbose)
-				debug(lst_inf);
+			if (param.verbose)
+				show_state(lst_inf, param);
 		}
 		rotate(1, &lst_inf->lst_a, "ra\n");
 		(*nb_instruct)++;
-		if (verbose)
-			debug(lst_inf);
+		if (param.verbose)
+			show_state(lst_inf, param);
 	}
-}
-
-static int	test_sorted(t_list *lst, int ascending)
-{
-	while (lst->next)
-	{
-		if (*((int *)lst->content) > *((int *)lst->next->content) && ascending)
-			return (0);
-		else if (*((int *)lst->content) < *((int *)lst->next->content) && !ascending)
-			return (0);
-		lst = lst->next;
-	}
-	return (1);
-}
-
-static int	should_swap(t_list *lst, t_tab_inf *tab_inf, int nb)
-{
-	int up;
-	int down;
-	int i;
-
-	i = 0;
-	while (tab_inf->sorted[i] != nb)
-		i++;
-	if (i == 0)
-		down = tab_inf->sorted[0];
-	else
-		down = tab_inf->sorted[i - 1];
-	if (i == tab_inf->sorted_len)
-		up = tab_inf->sorted[i];
-	else
-		up = tab_inf->sorted[i + 1];
-	if (*((int *)lst->next->content) == down)
-		return (1);
-	while (lst->next)
-		lst = lst->next;
-	if (*((int *)lst->content) == up)
-		return (0);
-	else
-		return (1);
-}
-
-static void	sort_mini(int ascending, t_list **lst, t_tab_inf *tab_inf, int *nb_instruct)
-{
-	t_list *tmp;
-	int first;
-
-	first = 1;
-	tmp = *lst;
-	while (!test_sorted(*lst, ascending))
-	{
-		if ((*((int *)tmp->content) < *((int *)tmp->next->content) && !ascending) || (*((int *)tmp->content) > *((int *)tmp->next->content) && ascending))
-		{
-			if (first && should_swap(*lst, tab_inf, *((int *)tmp->content)))
-			{
-				if (ascending)
-					swap(*lst, "sa\n");
-				else
-					swap(*lst, "sb\n");
-			}
-			else
-			{
-				if (ascending)
-					rotate(0, lst, "rra\n");
-				else
-					rotate(0, lst, "rrb\n");
-			}
-			(*nb_instruct)++;
-			tmp = *lst;
-			first = 1;
-		}
-		else
-		{
-			first = 0;
-			tmp = tmp->next;
-		}
-	}
-}
-
-void	    little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct)
-{
-	int half;
-	int len_b = 0;
-
-	half = tab_inf->sorted[tab_inf->sorted_len / 2];
-	if (tab_inf->sorted_len > 3)
-	{
-		while (len_b < tab_inf->sorted_len / 2)
-		{
-			if (*((int *)lst_inf->lst_a->content) < half)
-			{
-				push(&lst_inf->lst_b, &lst_inf->lst_a, "pb\n");
-				len_b++;
-			}
-			else
-				rotate(1, &lst_inf->lst_a, "ra\n");
-			(*nb_instruct)++;
-		}
-		sort_mini(1, &lst_inf->lst_a, tab_inf, nb_instruct);
-		sort_mini(0, &lst_inf->lst_b, tab_inf, nb_instruct);
-		while (lst_inf->lst_b)
-		{
-			push(&lst_inf->lst_a, &lst_inf->lst_b, "pa\n");
-			(*nb_instruct)++;
-		}
-	}
-	else
-		sort_mini(1, &lst_inf->lst_a, tab_inf, nb_instruct);
 }

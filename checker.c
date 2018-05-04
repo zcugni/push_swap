@@ -40,9 +40,9 @@ int	switch_op(t_lst_inf *lst_inf)
 				rotate(up, &lst_inf->lst_a, "");
 		}
 		else if (ft_strcmp(instruction[0], "pa") == 0)
-			push(&lst_inf->lst_a, &lst_inf->lst_b, "");
+			push(lst_inf, "pa"); //je suis obligée vu que c'est comme ça que checker sait quoi faire, mais ça va poser probleme car il va le print
 		else if (ft_strcmp(instruction[0], "pb") == 0)
-			push(&lst_inf->lst_b, &lst_inf->lst_a, "");
+			push(lst_inf, "pb");
 		else
 			return (0); //on dirait qu'il passe une fois de trop dans get_next_line et du coup 1 fois dans error
 		up = -1;
@@ -54,17 +54,16 @@ int main(int argc, char **argv)
 {
 	t_list	*tmp_lst;
 	int		is_sorted;
-	int		verbose;
-	int		color;
 	t_lst_inf	lst_inf;
 	t_tab_inf	tab_inf;
+	t_param		param;
 
 	//gestion des doublons ?
 
 	lst_inf.lst_b = NULL;
 	lst_inf.lst_a = NULL;
 	is_sorted = 1;
-	if (valid_input(argc, argv, &tab_inf, &lst_inf.lst_a, &verbose, &color))
+	if (valid_input(argc, argv, &tab_inf, &lst_inf.lst_a, &param))
 	{
 		if (switch_op(&lst_inf))
 		{

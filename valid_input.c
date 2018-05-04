@@ -35,7 +35,7 @@ int    display_error()
 
 #include <stdio.h>
 
-int     valid_input(int argc, char **argv, t_tab_inf *tab_inf, t_list **lst_a, int *verbose, int *color)
+int     valid_input(int argc, char **argv, t_tab_inf *tab_inf, t_list **lst_a, t_param *param)
 {
     int i;
     int tmp_nb;
@@ -46,14 +46,14 @@ int     valid_input(int argc, char **argv, t_tab_inf *tab_inf, t_list **lst_a, i
     {
         //recupere les params
         if (ft_strcmp(argv[1], "-v") == 0 || (argv[2] && ft_strcmp(argv[2], "-v") == 0))
-            *verbose = 1;
+            param->verbose = 1;
         else
-            *verbose = 0;
+            param->verbose = 0;
         if (ft_strcmp(argv[1], "-c") == 0 || (argv[2] && ft_strcmp(argv[2], "-c") == 0))
-            *color = 1;
+            param->color = 1;
         else
-            *color = 0;
-        i = *verbose + *color + 1;
+            param->color = 0;
+        i = param->verbose + param->color + 1;
         if (argc <= i)
             return (0);
         tab_inf->sorted = malloc((argc - i) * sizeof(int));
@@ -62,16 +62,16 @@ int     valid_input(int argc, char **argv, t_tab_inf *tab_inf, t_list **lst_a, i
             if(is_int(argv[i]))
             {
                 tmp_nb = ft_atoi(argv[i]);
-                if (tmp_nb < tab_inf->sorted[i - *color - *verbose - 2])
+                if (tmp_nb < tab_inf->sorted[i - param->color - param->verbose - 2])
                     already_sorted = 0;
-                tab_inf->sorted[i - *color - *verbose - 1] = tmp_nb;
+                tab_inf->sorted[i - param->color - param->verbose - 1] = tmp_nb;
                 ft_lstappend(lst_a, ft_lstnew(&tmp_nb, sizeof(tmp_nb)));
             }
             else
                 return (0);
             i++;
         }
-        tab_inf->sorted_len = i - 1 - *color - *verbose;
+        tab_inf->sorted_len = i - 1 - param->color - param->verbose;
         if (!already_sorted)
             return (quicksort(tab_inf->sorted, tab_inf->sorted_len));
     }

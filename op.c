@@ -39,14 +39,23 @@ void	swap_both(t_list *lst_a, t_list *lst_b, char *to_print)
 		ft_putstr("plop");
 }
 
-void	push(t_list **lst_receiver, t_list **lst_giver, char *to_print)
+#include <stdio.h>
+
+void	push(t_lst_inf *lst_inf, char *to_print)
 {
 	t_list *new;
 
-	if (lst_giver)
+	if (ft_strchr(to_print, 'a') && lst_inf->lst_b)
 	{
-		new = ft_pop(lst_giver);
-		ft_lstadd(lst_receiver, new);
+		new = ft_pop(&lst_inf->lst_b);
+		ft_lstadd(&lst_inf->lst_a, new);
+		lst_inf->len_b--;
+	}
+	else if (lst_inf->lst_a)
+	{
+		new = ft_pop(&lst_inf->lst_a);
+		ft_lstadd(&lst_inf->lst_b, new);
+		lst_inf->len_b++;
 	}
 	//printf("%s", to_print);
 	//je suis obligee de faire un truc avec to_print pour le compilateur

@@ -1,51 +1,40 @@
 #include "push_swap.h"
 
-
-#include <stdio.h>
-
-void    debug(t_lst_inf *lst_inf)
+static void	show_lst(t_list *lst, int lst_len, t_param param)
 {
-    t_list *tmp_a;
-    t_list *tmp_b;
-    int i;
+	int 	nb_to_show;
+	int 	i;
+	t_list *tmp_lst;
+
+	nb_to_show = 20;
+    tmp_lst = lst;
+    i = 0;
+    while (tmp_lst)
+    {
+        if (i < nb_to_show || i >= lst_len - nb_to_show || param.full)
+            ft_printf("%i ", *((int *)tmp_lst->content));
+        if (i == nb_to_show && tmp_lst->next && !param.full)
+            ft_printf("... ");
+        tmp_lst = tmp_lst->next;
+        i++;
+    }
+}
+
+void    show_state(t_lst_inf *lst_inf, t_param param)
+{
     int len_a;
-    int len_b;
 
-    int nb_to_show = 101;
-
+	ft_printf("A : ");
     if (lst_inf->lst_a)
     {
-        len_a = ft_lstlength(lst_inf->lst_a); //a opti
-        tmp_a = lst_inf->lst_a;
-        i = 0;
-        while (tmp_a)
-        {
-            if (i < nb_to_show || i >= len_a - nb_to_show)
-                printf("%i ", *((int *)tmp_a->content));
-             if (i == nb_to_show)
-                printf("... "); //a ameliorer
-            tmp_a = tmp_a->next;
-            i++;
-        }
-        printf("\n");
+		len_a = ft_lstlength(lst_inf->lst_a); //a opti
+		show_lst(lst_inf->lst_a, len_a, param);
     }
+	ft_printf("\n");
+	ft_printf("B : ");
     if (lst_inf->lst_b)
-    {
-        len_b = ft_lstlength(lst_inf->lst_b); //a opti
-        tmp_b = lst_inf->lst_b;
-        i = 0;
-        while (tmp_b)
-        {
-            if (i < nb_to_show || i > len_b - nb_to_show)
-                printf("%i ", *((int *)tmp_b->content));
-            if (i == nb_to_show)
-                printf("... "); //a ameliorer
-            tmp_b = tmp_b->next;
-            i++;
-        }
-        printf("\n");
-    }
-	printf("\n");
+		show_lst(lst_inf->lst_b, lst_inf->len_b, param);
+	ft_printf("\n");
 }
 
 int	quicksort(int *arr, int len) //a ameliorer
@@ -95,4 +84,23 @@ int	quicksort(int *arr, int len) //a ameliorer
 	return (1);
 }
 
+void	choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int modifier, int *do_ra, int *i_rotate)
+{
+	int i;
 
+	i = lst_findi(lst_inf->lst_b, &(tab_inf->sorted[tab_inf->next_index]), sizeof(tab_inf->sorted[tab_inf->next_index]));
+	if (i > lst_inf->len_b / 2 + lst_inf->len_b / 2 / 2 + modifier)
+        rotate(0, &lst_inf->lst_b, "rrb");
+    else
+    {
+        if (*do_ra)
+        {
+            rotate_both(1, &lst_inf->lst_a, &lst_inf->lst_b, "rr\n");
+            *do_ra = 0;
+			if (i_rotate)
+            	(*i_rotate)++;
+        }
+        else
+            rotate(1, &lst_inf->lst_b, "rb\n");
+    }
+}
