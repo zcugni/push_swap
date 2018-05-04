@@ -35,7 +35,7 @@ int    display_error()
 
 #include <stdio.h>
 
-int     valid_input(int argc, char **argv, int **sorted, int *sorted_len, t_lst_inf *lst_inf, int *verbose, int *color)
+int     valid_input(int argc, char **argv, t_tab_inf *tab_inf, t_list **lst_a, int *verbose, int *color)
 {
     int i;
     int tmp_nb;
@@ -56,24 +56,24 @@ int     valid_input(int argc, char **argv, int **sorted, int *sorted_len, t_lst_
         i = *verbose + *color + 1;
         if (argc <= i)
             return (0);
-        *sorted = malloc((argc - i) * sizeof(int));
+        tab_inf->sorted = malloc((argc - i) * sizeof(int));
         while (argv[i])
         {
             if(is_int(argv[i]))
             {
                 tmp_nb = ft_atoi(argv[i]);
-                if (tmp_nb < (*sorted)[i - *color - *verbose - 2])
+                if (tmp_nb < tab_inf->sorted[i - *color - *verbose - 2])
                     already_sorted = 0;
-                (*sorted)[i - *color - *verbose - 1] = tmp_nb;
-                ft_lstappend(&(lst_inf->lst_a), ft_lstnew(&tmp_nb, sizeof(tmp_nb)));
+                tab_inf->sorted[i - *color - *verbose - 1] = tmp_nb;
+                ft_lstappend(lst_a, ft_lstnew(&tmp_nb, sizeof(tmp_nb)));
             }
             else
                 return (0);
             i++;
         }
-        *sorted_len = i - 1 - *color - *verbose;
+        tab_inf->sorted_len = i - 1 - *color - *verbose;
         if (!already_sorted)
-            return (quicksort(*sorted, *sorted_len));
+            return (quicksort(tab_inf->sorted, tab_inf->sorted_len));
     }
     else
         return (0);

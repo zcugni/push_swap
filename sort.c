@@ -12,7 +12,10 @@
 
 #include "push_swap.h"
 
-void	    sort_batch(t_lst_inf *lst_inf, int *sorted, int *nb_instruct, int *next_index, int verbose)
+
+#include <stdio.h>
+
+void	    sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct, int verbose)
 {
 	int i;
 	int dist;
@@ -33,17 +36,18 @@ void	    sort_batch(t_lst_inf *lst_inf, int *sorted, int *nb_instruct, int *next
 			//printf("interne\n");
 			//debug(lst_a, lst_b);
 			/// a opti
-			while (*((int *)lst_inf->lst_a->content) == sorted[*next_index] && *((int *)lst_inf->lst_a->content) != sorted[0])
+			//printf("lst_a : %i\n", *((int *)lst_inf->lst_a->content));
+			while (*((int *)lst_inf->lst_a->content) == tab_inf->sorted[tab_inf->next_index] && *((int *)lst_inf->lst_a->content) != tab_inf->sorted[0])
 			{
 				rotate(1, &lst_inf->lst_a, "ra\n");
 				(*nb_instruct)++;
-				(*next_index)++;
+				tab_inf->next_index++;
 				do_ra = 0;
 			}
-			if (*((int *)lst_inf->lst_a->content) == sorted[*next_index])
+			if (*((int *)lst_inf->lst_b->content) == tab_inf->sorted[tab_inf->next_index])
 			{
-				while ((*((int *)lst_inf->lst_a->content) <= sorted[*next_index] && *((int *)lst_inf->lst_a->content) != sorted[0])
-				|| (*((int *)lst_inf->lst_a->content) <= sorted[*next_index] && *((int *)lst_inf->lst_b->content) == sorted[1]))
+				while ((*((int *)lst_inf->lst_a->content) <= tab_inf->sorted[tab_inf->next_index] && *((int *)lst_inf->lst_a->content) != tab_inf->sorted[0])
+				|| (*((int *)lst_inf->lst_a->content) <= tab_inf->sorted[tab_inf->next_index] && *((int *)lst_inf->lst_b->content) == tab_inf->sorted[1]))
 				{
 					rotate(1, &lst_inf->lst_a, "ra\n");
 					(*nb_instruct)++;
@@ -58,7 +62,7 @@ void	    sort_batch(t_lst_inf *lst_inf, int *sorted, int *nb_instruct, int *next
 				lst_inf->len_b--;
 				i++;
 				do_ra = 1;
-				(*next_index)++;
+				tab_inf->next_index++;
 			}
 			else
 			{
@@ -68,7 +72,7 @@ void	    sort_batch(t_lst_inf *lst_inf, int *sorted, int *nb_instruct, int *next
 					swap(*lst_b, "sb\n");
 				else
 				{*/
-					dist = lst_findi(lst_inf->lst_b, &(sorted[*next_index]), sizeof(sorted[*next_index]));
+					dist = lst_findi(lst_inf->lst_b, &(tab_inf->sorted[tab_inf->next_index]), sizeof(tab_inf->sorted[tab_inf->next_index]));
 					//if (dist > *len_b / 2 - *len_b / 2 / 2)
 					if (dist == lst_inf->len_b)
 						rotate(0, &lst_inf->lst_b, "rrb\n");
@@ -110,23 +114,23 @@ static int	test_sorted(t_list *lst, int ascending)
 	return (1);
 }
 
-static int	should_swap(t_list *lst, int *sorted, int nb, int len)
+static int	should_swap(t_list *lst, t_tab_inf *tab_inf, int nb)
 {
 	int up;
 	int down;
 	int i;
 
 	i = 0;
-	while (sorted[i] != nb)
+	while (tab_inf->sorted[i] != nb)
 		i++;
 	if (i == 0)
-		down = sorted[0];
+		down = tab_inf->sorted[0];
 	else
-		down = sorted[i - 1];
-	if (i == len)
-		up = sorted[i];
+		down = tab_inf->sorted[i - 1];
+	if (i == tab_inf->sorted_len)
+		up = tab_inf->sorted[i];
 	else
-		up = sorted[i + 1];
+		up = tab_inf->sorted[i + 1];
 	if (*((int *)lst->next->content) == down)
 		return (1);
 	while (lst->next)
@@ -137,7 +141,7 @@ static int	should_swap(t_list *lst, int *sorted, int nb, int len)
 		return (1);
 }
 
-static void	sort_mini(int ascending, t_list **lst, int *sorted, int len, int *nb_instruct)
+static void	sort_mini(int ascending, t_list **lst, t_tab_inf *tab_inf, int *nb_instruct)
 {
 	t_list *tmp;
 	int first;
@@ -148,7 +152,7 @@ static void	sort_mini(int ascending, t_list **lst, int *sorted, int len, int *nb
 	{
 		if ((*((int *)tmp->content) < *((int *)tmp->next->content) && !ascending) || (*((int *)tmp->content) > *((int *)tmp->next->content) && ascending))
 		{
-			if (first && should_swap(*lst, sorted, *((int *)tmp->content), len))
+			if (first && should_swap(*lst, tab_inf, *((int *)tmp->content)))
 			{
 				if (ascending)
 					swap(*lst, "sa\n");
@@ -174,15 +178,15 @@ static void	sort_mini(int ascending, t_list **lst, int *sorted, int len, int *nb
 	}
 }
 
-void	    little_list(t_lst_inf *lst_inf, int *sorted, int len, int *nb_instruct)
+void	    little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct)
 {
 	int half;
 	int len_b = 0;
 
-	half = sorted[len / 2];
-	if (len > 3)
+	half = tab_inf->sorted[tab_inf->sorted_len / 2];
+	if (tab_inf->sorted_len > 3)
 	{
-		while (len_b < len / 2)
+		while (len_b < tab_inf->sorted_len / 2)
 		{
 			if (*((int *)lst_inf->lst_a->content) < half)
 			{
@@ -193,8 +197,8 @@ void	    little_list(t_lst_inf *lst_inf, int *sorted, int len, int *nb_instruct)
 				rotate(1, &lst_inf->lst_a, "ra\n");
 			(*nb_instruct)++;
 		}
-		sort_mini(1, &lst_inf->lst_a, sorted, len, nb_instruct);
-		sort_mini(0, &lst_inf->lst_b, sorted, len, nb_instruct);
+		sort_mini(1, &lst_inf->lst_a, tab_inf, nb_instruct);
+		sort_mini(0, &lst_inf->lst_b, tab_inf, nb_instruct);
 		while (lst_inf->lst_b)
 		{
 			push(&lst_inf->lst_a, &lst_inf->lst_b, "pa\n");
@@ -202,5 +206,5 @@ void	    little_list(t_lst_inf *lst_inf, int *sorted, int len, int *nb_instruct)
 		}
 	}
 	else
-		sort_mini(1, &lst_inf->lst_a, sorted, len, nb_instruct);
+		sort_mini(1, &lst_inf->lst_a, tab_inf, nb_instruct);
 }

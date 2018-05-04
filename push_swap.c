@@ -16,7 +16,7 @@
 #include <stdio.h>
 int nb_instruct = 0;
 
-void    real_qs_lst(t_lst_inf *lst_inf, int *sorted, int *next_index, t_list **lst_halves, int verbose)
+void    real_qs_lst(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_list **lst_halves, int verbose)
 {
     int half;
 
@@ -24,76 +24,70 @@ void    real_qs_lst(t_lst_inf *lst_inf, int *sorted, int *next_index, t_list **l
     {
         half = lst_inf->len_b / 2;
         ft_lstadd(lst_halves, ft_lstnew(&half, sizeof(half)));
-        //printf("avant split\n");
+        printf("avant split\n");
         //debug(lst_inf);
-        split_b(lst_inf, sorted, next_index, verbose, &nb_instruct);
-        //printf("apres split\n");
+        split_b(lst_inf, tab_inf, verbose, &nb_instruct);
+        printf("apres split\n");
         //debug(lst_inf);
-        real_qs_lst(lst_inf, sorted, next_index,lst_halves, verbose);
-        //printf("avant send - half : %i\n", *((int *)(*lst_halves)->content));
-        //debug(lst_a, lst_b);
-        send_in_b(lst_inf, ft_pop_value(lst_halves), sorted, next_index, verbose, &nb_instruct);
-        //printf("apres send\n");
-        //debug(lst_a, lst_b);
-        real_qs_lst(lst_inf, sorted, next_index, lst_halves, verbose);
+        real_qs_lst(lst_inf, tab_inf, lst_halves, verbose);
+        printf("avant send - half : %i\n", *((int *)(*lst_halves)->content));
+        //debug(lst_inf);
+        send_in_b(lst_inf, ft_pop_value(lst_halves), tab_inf, verbose, &nb_instruct);
+        printf("apres send\n");
+        //debug(lst_inf);
+        real_qs_lst(lst_inf, tab_inf, lst_halves, verbose);
     }
     else
     {
-        //printf("avant sort - desired : %i\n", sorted[*next_index]);
-        //debug(lst_a, lst_b);
-        sort_batch(lst_inf, sorted, &nb_instruct, next_index, verbose);
-        //printf("apres sort - desired : %i\n", sorted[*next_index]);
-        //debug(lst_a, lst_b);
+        printf("avant sort");
+        debug(lst_inf);
+        sort_batch(lst_inf, tab_inf, &nb_instruct, verbose);
+        printf("apres sort");
+        //debug(lst_inf);
     }
 }
 
-void get_instruct(t_lst_inf *lst_inf, int *sorted, int sorted_len, int verbose)
+void get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int verbose)
 {
-    int next_index;
-    int len_b;
     t_list *lst_halves;
 
     lst_halves = NULL;
-    next_index = 0;
-    len_b = 0;
-    if (sorted_len > 9)
+    tab_inf->next_index = 0;
+    lst_inf->len_b = 0;
+    if (tab_inf->sorted_len > 9)
     {
-        send_half(lst_inf, sorted, 0, sorted_len / 2, &next_index, verbose, &nb_instruct);
-        //debug(lst_inf);
-        real_qs_lst(lst_inf, sorted, &next_index, &lst_halves, verbose);
+        send_half(lst_inf, tab_inf, 0, tab_inf->sorted_len / 2, verbose, &nb_instruct);
+        debug(lst_inf);
+        printf("plop\n");
+        real_qs_lst(lst_inf, tab_inf, &lst_halves, verbose);
+        printf("yo\n");
         //printf("desired : %i\n", sorted[next_index]);
-        //debug(lst_a, lst_b);
-        send_half(lst_inf, sorted, sorted_len / 2, sorted_len / 2 + sorted_len % 2, &next_index, verbose, &nb_instruct);
-        /*debug(lst_a, lst_b);
+        //debug(lst_inf);
+        send_half(lst_inf, tab_inf, tab_inf->sorted_len / 2, tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2, verbose, &nb_instruct);
+        /*debug(lst_inf);
         printf("\n");*/
-        real_qs_lst(lst_inf, sorted, &next_index, &lst_halves, verbose);
+        real_qs_lst(lst_inf, tab_inf, &lst_halves, verbose);
     }
     else
     {
         //en vrai, ca marche avec send_half ici, mais vu que je fais que des ra et pas des rra, c'est moins opti
-        little_list(lst_inf, sorted, sorted_len, &nb_instruct); // a faire mieux
+        little_list(lst_inf, tab_inf, &nb_instruct); // a faire mieux
     }
 }
 
 int main(int argc, char **argv)
 {
-	//t_list  *lst_a;
-	//t_list	*lst_b;
-	int     *sorted;
-    int     sorted_len;
     int     verbose;
     int     color;
     t_lst_inf lst_inf;
+    t_tab_inf tab_inf;
 
     lst_inf.lst_b = NULL;
     lst_inf.lst_a = NULL;
-    //lst_b = NULL;
-    //lst_a = NULL;
-    sorted = NULL;
-    if (valid_input(argc, argv, &sorted, &sorted_len, &lst_inf, &verbose, &color))
+    if (valid_input(argc, argv, &tab_inf, &(lst_inf.lst_a), &verbose, &color))
     {
         debug(&lst_inf);
-        get_instruct(&lst_inf, sorted, sorted_len, verbose);
+        get_instruct(&lst_inf, &tab_inf, verbose);
         //faire ca mieux
 		while (lst_inf.lst_a)
 		{
