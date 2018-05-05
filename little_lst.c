@@ -14,13 +14,16 @@
 
 static int	test_sorted(t_list *lst, int ascending)
 {
-	while (lst->next)
+	t_list *tmp;
+
+	tmp = lst;
+	while (tmp->next)
 	{
-		if (*((int *)lst->content) > *((int *)lst->next->content) && ascending)
+		if (*((int *)tmp->content) > *((int *)tmp->next->content) && ascending)
 			return (0);
-		else if (*((int *)lst->content) < *((int *)lst->next->content) && !ascending)
+		else if (*((int *)tmp->content) < *((int *)tmp->next->content) && !ascending)
 			return (0);
-		lst = lst->next;
+		tmp = tmp->next;
 	}
 	return (1);
 }
@@ -52,39 +55,44 @@ static int	should_swap(t_list *lst, t_tab_inf *tab_inf, int nb)
 		return (1);
 }
 
-static void	choose_op(int first, int ascending, int need_swap, t_list **lst)
+static void	choose_op(int first, int ascending, int need_swap, t_lst_inf *lst_inf, t_param param)
 {
 	if (first && need_swap)
 	{
 		if (ascending)
-			swap(*lst, "sa\n");
+			swap(lst_inf, "sa\n", param);
 		else
-			swap(*lst, "sb\n");
+			swap(lst_inf, "sb\n", param);
 	}
 	else
 	{
 		if (ascending)
-			rotate(0, lst, "rra\n");
+			rotate(0, lst_inf, "rra\n", param);
 		else
-			rotate(0, lst, "rrb\n");
+			rotate(0, lst_inf, "rrb\n", param);
 	}
 }
 
-static void	sort_mini(int ascending, t_list **lst, t_tab_inf *tab_inf, int *nb_instruct)
+static void	sort_mini(int ascending, t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct, t_param param)
 {
 	t_list	*tmp;
+	t_list	*lst;
 	int 	first;
 	int		need_swap;
 
 	first = 1;
-	tmp = *lst;
-	while (!test_sorted(*lst, ascending))
+	if (ascending)
+		lst = lst_inf->lst_a;
+	else
+		lst = lst_inf->lst_b;
+	tmp = lst;
+	while (!test_sorted(lst, ascending))
 		if ((*((int *)tmp->content) < *((int *)tmp->next->content) && !ascending) || (*((int *)tmp->content) > *((int *)tmp->next->content) && ascending))
 		{
-			need_swap = should_swap(*lst, tab_inf, *((int *)tmp->content));
-			choose_op(first, ascending, need_swap, lst);
+			need_swap = should_swap(lst, tab_inf, *((int *)tmp->content));
+			choose_op(first, ascending, need_swap, lst_inf, param);
 			(*nb_instruct)++;
-			tmp = *lst;
+			tmp = lst;
 			first = 1;
 		}
 		else
@@ -94,7 +102,7 @@ static void	sort_mini(int ascending, t_list **lst, t_tab_inf *tab_inf, int *nb_i
 		}
 }
 
-void	    little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct)
+void	    little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct, t_param param)
 {
 	int half;
 
@@ -105,19 +113,19 @@ void	    little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct)
 		while (lst_inf->len_b < tab_inf->sorted_len / 2)
 		{
 			if (*((int *)lst_inf->lst_a->content) < half)
-				push(lst_inf, "pb\n");
+				push(lst_inf, "pb\n", param);
 			else
-				rotate(1, &lst_inf->lst_a, "ra\n");
+				rotate(1, lst_inf, "ra\n", param);
 			(*nb_instruct)++;
 		}
-		sort_mini(1, &lst_inf->lst_a, tab_inf, nb_instruct);
-		sort_mini(0, &lst_inf->lst_b, tab_inf, nb_instruct);
+		sort_mini(1, lst_inf, tab_inf, nb_instruct, param);
+		sort_mini(0, lst_inf, tab_inf, nb_instruct, param);
 		while (lst_inf->lst_b)
 		{
-			push(lst_inf, "pa\n");
+			push(lst_inf, "pa\n", param);
 			(*nb_instruct)++;
 		}
 	}
 	else
-		sort_mini(1, &lst_inf->lst_a, tab_inf, nb_instruct);
+		sort_mini(1, lst_inf, tab_inf, nb_instruct, param);
 }

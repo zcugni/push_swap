@@ -103,6 +103,8 @@ int     valid_input(int argc, char **argv, t_tab_inf *tab_inf, t_list **lst_a, t
     //already_sorted = 1;
     if (argc > 1)
     {
+        //param->silent = 1; //a enlever;
+        param->silent = 0; //a enlever;
         if (ft_strcmp(argv[1], "-v") == 0 || (argv[2] && ft_strcmp(argv[2], "-v") == 0))
             param->verbose = 1;
         else
@@ -111,6 +113,10 @@ int     valid_input(int argc, char **argv, t_tab_inf *tab_inf, t_list **lst_a, t
             param->color = 1;
         else
             param->color = 0;
+        if (ft_strcmp(argv[1], "-f") == 0 || (argv[2] && ft_strcmp(argv[2], "-f") == 0))
+            param->full = 1;
+        else
+            param->full = 0;
         i = param->verbose + param->color + 1;
         if (argc <= i)
             return (0);

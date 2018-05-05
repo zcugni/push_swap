@@ -58,14 +58,8 @@ void get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
     if (tab_inf->sorted_len > 9)
     {
         send_half(lst_inf, tab_inf, 0, tab_inf->sorted_len / 2,  param, &nb_instruct);
-        //printf("send_half :\n");
-        //show_state(lst_inf, param);
         real_qs_lst(lst_inf, tab_inf, &lst_halves,  param);
-        //printf("qs :\n");
-        //show_state(lst_inf, param);
         send_half(lst_inf, tab_inf, tab_inf->sorted_len / 2, tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2,  param, &nb_instruct);
-        //printf("send_half :\n");
-        //show_state(lst_inf, param);
         real_qs_lst(lst_inf, tab_inf, &lst_halves,  param);
     }
     else

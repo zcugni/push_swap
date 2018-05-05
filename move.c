@@ -14,6 +14,8 @@
 
 #include <stdio.h>
 
+int desired = 0;
+
 void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *nb_instruct)
 {
     int i_send;
@@ -35,13 +37,13 @@ void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *nb_i
         {
             if (do_ra)
             {
-                rotate(1, &lst_inf->lst_a, "ra\n");
+                rotate(1, lst_inf, "ra\n", param);
                 do_ra = 0;
                 (*nb_instruct)++;
                 i_rotate++;
             }
-            push(lst_inf, "pa\n");
-            if (*((int *)lst_inf->lst_a->content) == tab_inf->sorted[tab_inf->next_index])
+            push(lst_inf, "pa\n", param);
+            if (get_int(lst_inf, 'a') == get_desired(tab_inf))
             {
                 if (*((int *)lst_inf->lst_a->content) < tab_inf->sorted[pivot_min])
                     i_send--;
@@ -56,10 +58,10 @@ void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *nb_i
         //else if (*((int *)lst_inf->lst_a->next->content) == sorted[*next_index] && *((int *)lst_inf->lst_a->content) == sorted[*next_index + 1]) //c'est tellement specifique comme cas que ca n'arrive jamais
         //    swap(*lst_b, "sb\n");
         else
-            choose_rotate(lst_inf, tab_inf, 3, &do_ra, &i_rotate);
+        {
+            choose_rotate(lst_inf, tab_inf, 3, &do_ra, &i_rotate, param); //(-3)
+        }
         (*nb_instruct)++;
-        if (param.verbose)
-            show_state(lst_inf, param);
     }
     //ce truc n'arrive jamais, je suis pas sure qu'il est encore d'actu
     /*if (*((int *)lst_inf->lst_a->content) < sorted[*next_index])
@@ -70,14 +72,12 @@ void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *nb_i
     //je devrais pas faire une verif ou je tourne lst_a avant dans ce while ?
     //printf("interne\n");
     //show_state(lst_inf, param);
-    while (lst_inf->lst_b && *((int *)lst_inf->lst_b->content) == tab_inf->sorted[tab_inf->next_index])
+    while (lst_inf->lst_b && get_int(lst_inf, 'b') == get_desired(tab_inf))
     {
-        push(lst_inf, "pa\n");
-        rotate(1, &lst_inf->lst_a, "ra\n");
+        push(lst_inf, "pa\n", param);
+        rotate(1, lst_inf, "ra\n", param);
         *nb_instruct += 2;
         tab_inf->next_index++;
-        if (param.verbose)
-            show_state(lst_inf, param);
     }
 }
 
@@ -98,20 +98,18 @@ void    send_half(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int pivot_min, int nb_
         }*/
         if (get_int(lst_inf, 'a') == get_desired(tab_inf) && tab_inf->next_index != 0)
         {
-            rotate(1, &lst_inf->lst_a, "ra\n");
+            rotate(1, lst_inf, "ra\n", param);
             tab_inf->next_index++;
             i++;
         }
         else if (get_int(lst_inf, 'a') >= tab_inf->sorted[pivot_min] && get_int(lst_inf, 'a') <= tab_inf->sorted[pivot_min + nb_to_send - 1])
         {
-            push(lst_inf, "pb\n");
+            push(lst_inf, "pb\n", param);
             i++;
         }
         else
-            rotate(1, &lst_inf->lst_a, "ra\n");
+            rotate(1, lst_inf, "ra\n", param);
         (*nb_instruct)++;
-        if (param.verbose)
-            show_state(lst_inf, param);
     }
 }
 
@@ -124,21 +122,19 @@ void    send_in_b(t_lst_inf *lst_inf, int diff, t_tab_inf *tab_inf, t_param para
     {
         //je risque pas d'avoir un segfault si next_index est le max ?
         
-        if (*((int *)lst_inf->lst_a->content) <= tab_inf->sorted[tab_inf->next_index])
+        if (get_int(lst_inf, 'a') <= get_desired(tab_inf))
         {
-            rotate(1, &lst_inf->lst_a, "ra\n");
+            rotate(1, lst_inf, "ra\n", param);
             tab_inf->next_index++;
         }
-        else if (*((int *)lst_inf->lst_a->next->content) == tab_inf->sorted[tab_inf->next_index] && *((int *)lst_inf->lst_a->content) == tab_inf->sorted[tab_inf->next_index + 1])
+        else if (*((int *)lst_inf->lst_a->next->content) == get_desired(tab_inf) && get_int(lst_inf, 'a') == tab_inf->sorted[tab_inf->next_index + 1])
         {
-            swap(lst_inf->lst_a, "sa\n");
+            swap(lst_inf, "sa\n", param);
             i--;
         }
         else
-            push(lst_inf, "pb\n");
+            push(lst_inf, "pb\n", param);
         i++;
         (*nb_instruct)++;
-        if (param.verbose)
-            show_state(lst_inf, param);
     }
 }

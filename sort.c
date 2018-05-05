@@ -10,9 +10,8 @@ void	    sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *
 		while (get_int(lst_inf, 'a') == get_desired(tab_inf) && get_int(lst_inf, 'a') != tab_inf->sorted[0])
 		{
 			tab_inf->next_index++;
-			rotate(1, &lst_inf->lst_a, "ra\n");
+			rotate(1, lst_inf, "ra\n", param);
 			(*nb_instruct)++;
-			//if param.verbose
 		}
 		while (lst_inf->lst_b)
 		{
@@ -20,24 +19,18 @@ void	    sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *
 			{
 				while (get_int(lst_inf, 'a') < get_desired(tab_inf) && get_int(lst_inf, 'a') != tab_inf->sorted[0])
 				{
-					rotate(1, &lst_inf->lst_a, "ra\n");
+					rotate(1, lst_inf, "ra\n", param);
 					(*nb_instruct)++;
-					if (param.verbose)
-						show_state(lst_inf, param);
 				}
-				push(lst_inf, "pa\n");
+				push(lst_inf, "pa\n", param);
 				do_ra = 1;
 				tab_inf->next_index++;
 			}
 			else
-				choose_rotate(lst_inf, tab_inf, 1, &do_ra, NULL);
+				choose_rotate(lst_inf, tab_inf, 1, &do_ra, NULL, param);
 			(*nb_instruct)++;
-			if (param.verbose)
-				show_state(lst_inf, param);
 		}
-		rotate(1, &lst_inf->lst_a, "ra\n");
+		rotate(1, lst_inf, "ra\n", param);
 		(*nb_instruct)++;
-		if (param.verbose)
-			show_state(lst_inf, param);
 	}
 }

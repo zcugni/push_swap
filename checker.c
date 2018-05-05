@@ -12,14 +12,15 @@
 
 # include "push_swap.h"
 
-int	switch_op(t_lst_inf *lst_inf)
+static int	switch_op(t_lst_inf *lst_inf, t_param param)
 {
 	char    **instruction;
 	int     up;
 
 	up = -1;
+	//LES PRINTS SONT COMPLETEMENT FAUX !!!!
 	instruction = malloc(sizeof(char *)); //proteger
-	while (get_next_line(0, instruction))
+	while (get_next_line(0, instruction, '\n'))
 	{
 		if (ft_strnstr(instruction[0], "rr", 2) && ft_strlen(instruction[0]) > 2)
 			up = 0;
@@ -28,21 +29,21 @@ int	switch_op(t_lst_inf *lst_inf)
 		if (ft_strcmp(instruction[0], "sa") == 0 || ft_strcmp(instruction[0], "ss") == 0 || ft_strcmp(instruction[0], "sb") == 0)
 		{
 			if (!ft_strchr(instruction[0], 'a'))
-				swap(lst_inf->lst_b, ""); //je suis pas sure que ca marche sans rien afficher en vrai
+				swap(lst_inf, "sa\n", param);
 			if (!ft_strchr(instruction[0], 'b'))
-				swap(lst_inf->lst_a, "");
+				swap(lst_inf, "sb\n", param);
 		}
 		else if (up > -1)
 		{
 			if (!ft_strchr(instruction[0], 'a'))
-				rotate(up, &lst_inf->lst_b, "");
+				rotate(up, lst_inf, "ra\n", param);
 			if (!ft_strchr(instruction[0], 'b'))
-				rotate(up, &lst_inf->lst_a, "");
+				rotate(up, lst_inf, "rb\n", param);
 		}
 		else if (ft_strcmp(instruction[0], "pa") == 0)
-			push(lst_inf, "pa"); //je suis obligée vu que c'est comme ça que checker sait quoi faire, mais ça va poser probleme car il va le print
+			push(lst_inf, "pa\n", param);
 		else if (ft_strcmp(instruction[0], "pb") == 0)
-			push(lst_inf, "pb");
+			push(lst_inf, "pb\n", param);
 		else
 			return (0); //on dirait qu'il passe une fois de trop dans get_next_line et du coup 1 fois dans error
 		up = -1;
@@ -65,7 +66,7 @@ int main(int argc, char **argv)
 	is_sorted = 1;
 	if (valid_input(argc, argv, &tab_inf, &lst_inf.lst_a, &param))
 	{
-		if (switch_op(&lst_inf))
+		if (switch_op(&lst_inf, param))
 		{
 			if (!lst_inf.lst_b)
 			{

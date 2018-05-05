@@ -35,24 +35,25 @@ typedef struct          s_param
     int     verbose;
     int     color;
     int     full;
+    int     silent;
 }                       t_param;
 
 t_list	*ft_pop(t_list **lst);
 int		ft_pop_value(t_list **lst);
 
-void	swap(t_list *lst, char *to_print);
-void	swap_both(t_list *lst_a, t_list *lst_b, char *to_print);
-void	push(t_lst_inf *lst_inf, char *to_print);
-void	rotate(int up, t_list **lst, char *to_print);
-void	rotate_both(int up, t_list **lst_a, t_list **lst_b, char *to_print);
+void	swap(t_lst_inf *lst_inf, char *to_print, t_param param);
+void	swap_both(t_lst_inf *lst_inf, char *to_print, t_param param);
+void	push(t_lst_inf *lst_inf, char *to_print, t_param param);
+void	rotate(int up, t_lst_inf *lst_inf, char *to_print, t_param param);
+void	rotate_both(int up, t_lst_inf *lst_inf, char *to_print, t_param param);
 
 int 	quicksort(int *arr, int len);
 int		abs(int nb);
-void    show_state(t_lst_inf *lst_inf, t_param param);
-void	choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int modifier, int *do_ra, int *i_rotate);
+void    show_state(t_lst_inf *lst_inf, t_param param, char *last_op);
+void	choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int modifier, int *do_ra, int *i_rotate, t_param param);
 
 void	sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *nb_instruct);
-void	little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct);
+void	little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct, t_param param);
 
 int     valid_input(int argc, char **argv, t_tab_inf *tab_inf, t_list **lst_a, t_param *param);
 int     display_error();
