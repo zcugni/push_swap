@@ -132,7 +132,7 @@ void					ft_putnbr(int n);
 void					ft_putnbr_fd(int n, int fd);
 void					ft_putstr(const char *str);
 void					ft_putstr_fd(char const *s, int fd);
-int						get_next_line(const int fd, char **line);
+int						get_next_line(const int fd, char **line, char separator);
 
 
 /* ---Mem--- */

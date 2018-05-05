@@ -58,7 +58,7 @@ char		*ft_strjoin_overlap(char **s1, char **s2)
 	return (str);
 }
 
-int			get_next_line(const int fd, char **line)
+int			get_next_line(const int fd, char **line, char separator)
 {
 	static char *rest = NULL;
 	char		*buff;
@@ -68,7 +68,7 @@ int			get_next_line(const int fd, char **line)
 	while (1)
 	{
 		rest = (rest == NULL ? ft_strnew(0) : rest);
-		if ((index = ft_strchri(rest, '\n')) == -1)
+		if ((index = ft_strchri(rest, separator)) == -1)
 		{
 			buff = ft_strnew(BUFF_SIZE + 1);
 			if ((state = read(fd, buff, BUFF_SIZE)) == 0)

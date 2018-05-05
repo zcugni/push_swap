@@ -14,6 +14,7 @@
 # define PUSH_SWAP_H
 # include <stdlib.h>
 # include "libft/libft.h"
+# include "fcntl.h"
 
 typedef	struct			s_lst_inf
 {
