@@ -39,9 +39,9 @@ static int	should_swap(t_list *lst, t_tab_inf *tab_inf, int nb)
 		return (1);
 }
 
-static void	choose_op(int first, int ascending, int need_swap, t_lst_inf *lst_inf, t_param param)
+static void	choose_op(int ascending, int need_swap, t_lst_inf *lst_inf, t_param param)
 {
-	if (first && need_swap)
+	if (need_swap)
 	{
 		if (ascending)
 			swap(lst_inf, "sa\n", param);
@@ -57,6 +57,20 @@ static void	choose_op(int first, int ascending, int need_swap, t_lst_inf *lst_in
 	}
 }
 
+static int	test_diff(t_list *lst, int ascending)
+{
+	int nb;
+	int next_nb;
+
+	nb = *((int *)lst->content);
+	next_nb = *((int *)lst->next->content); 
+	if ((nb < next_nb && !ascending) ||
+		(nb > next_nb && ascending))
+		return (1);
+	else
+		return (0);
+}
+
 static void	sort_mini(int ascending, t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct, t_param param)
 {
 	t_list	*tmp;
@@ -65,16 +79,17 @@ static void	sort_mini(int ascending, t_lst_inf *lst_inf, t_tab_inf *tab_inf, int
 	int		need_swap;
 
 	first = 1;
-	if (ascending)
-		lst = lst_inf->lst_a;
-	else
+	lst = lst_inf->lst_a;
+	if (!ascending)
 		lst = lst_inf->lst_b;
 	tmp = lst;
 	while (!test_sorted(lst, ascending))
-		if ((*((int *)tmp->content) < *((int *)tmp->next->content) && !ascending) || (*((int *)tmp->content) > *((int *)tmp->next->content) && ascending))
+		if (test_diff(tmp, ascending))
 		{
-			need_swap = should_swap(lst, tab_inf, *((int *)tmp->content));
-			choose_op(first, ascending, need_swap, lst_inf, param);
+			need_swap = 0;
+			if (first && should_swap(lst, tab_inf, *((int *)tmp->content)))
+				need_swap = 1;
+			choose_op(ascending, need_swap, lst_inf, param);
 			(*nb_instruct)++;
 			tmp = lst;
 			first = 1;
@@ -96,7 +111,7 @@ void	    little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct, t
 	{
 		while (lst_inf->len_b < tab_inf->sorted_len / 2)
 		{
-			if (*((int *)lst_inf->lst_a->content) < half)
+			if (get_int(lst_inf, 'a') < half)
 				push(lst_inf, "pb\n", param);
 			else
 				rotate(1, lst_inf, "ra\n", param);

@@ -38,9 +38,6 @@ typedef struct          s_param
     int     silent;
 }                       t_param;
 
-t_list	*ft_pop(t_list **lst);
-int		ft_pop_value(t_list **lst);
-
 void	swap(t_lst_inf *lst_inf, char *to_print, t_param param);
 void	push(t_lst_inf *lst_inf, char *to_print, t_param param);
 void	rotate(int up, t_lst_inf *lst_inf, char *to_print, t_param param);

@@ -1,12 +1,10 @@
 #include "push_swap.h"
 
-#include <stdio.h>
-
 static void	show_lst(t_list *lst, int lst_len, t_param param, char last_op)
 {
 	int 	nb_to_show;
 	int 	i;
-	t_list *tmp_lst;
+	t_list *tmp_lst; //vu que c'est pas des doubles **, j'ai pas forcement besoin de rajouter ca par dessus
 
 	nb_to_show = 20;
     tmp_lst = lst;

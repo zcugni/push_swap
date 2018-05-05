@@ -12,10 +12,6 @@
 
 #include "push_swap.h"
 
-#include <stdio.h>
-
-int desired = 0;
-
 void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *nb_instruct)
 {
     int i_send;

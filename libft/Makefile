@@ -24,7 +24,8 @@ SRCS_STR = ft_strcat.c ft_strdup.c ft_strncmp.c ft_strstr.c ft_strcpy.c \
 
 SRCS_LST = ft_lstadd.c ft_lstiter.c ft_lstmap.c ft_lstcpy.c ft_lstnew.c \
 			ft_lstdelone.c ft_lstdel.c ft_lstfind.c ft_lstappend.c \
-			lst_clr.c lst_to_str.c ft_lstlength.c lst_findi.c
+			lst_clr.c lst_to_str.c ft_lstlength.c lst_findi.c ft_pop.c \
+			ft_pop_value.c
 
 SRCS_MEM = ft_memmove.c ft_memchr.c ft_memcmp.c ft_memalloc.c ft_memdel.c \
 			ft_memcpy.c ft_bzero.c ft_memset.c ft_memccpy.c

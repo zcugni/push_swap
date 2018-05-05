@@ -34,7 +34,7 @@ static int    read_file(int fd, t_tab_inf *tab_inf, t_list **lst_a)
 
     arg = malloc(sizeof(char *));
     i = 0;
-    while (res = get_next_line(fd, arg, ' '))
+    while ((res = get_next_line(fd, arg, ' ')))
     {
         if (res == -1)
             return (0);
