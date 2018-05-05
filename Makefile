@@ -15,7 +15,7 @@ NAME_1 = checker
 NAME_2 = push_swap
 
 #va falloir que je change ca apres
-SRCS_1 = checker.c lst_func.c op.c valid_input.c misc.c getter.c
+SRCS_1 = checker.c lst_func.c valid_input.c misc.c getter.c op.c
 
 SRCS_2 = push_swap.c lst_func.c op.c misc.c valid_input.c sort.c move.c getter.c little_lst.c
 

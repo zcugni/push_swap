@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int		ft_atoi(char *str)
+long long	ft_atoi(char *str)
 {
-	int final_nb;
-	int is_neg;
+	long long	final_nb;
+	int 		is_neg;
 
 	final_nb = 0;
 	is_neg = 0;

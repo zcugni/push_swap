@@ -12,22 +12,6 @@
 
 #include "push_swap.h"
 
-static int	test_sorted(t_list *lst, int ascending)
-{
-	t_list *tmp;
-
-	tmp = lst;
-	while (tmp->next)
-	{
-		if (*((int *)tmp->content) > *((int *)tmp->next->content) && ascending)
-			return (0);
-		else if (*((int *)tmp->content) < *((int *)tmp->next->content) && !ascending)
-			return (0);
-		tmp = tmp->next;
-	}
-	return (1);
-}
-
 static int	should_swap(t_list *lst, t_tab_inf *tab_inf, int nb)
 {
 	int up;

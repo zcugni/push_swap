@@ -174,7 +174,7 @@ int				display(t_list *final_lst, int error);
 
 
 /* ---Misc--- */
-int						ft_atoi(const char *str);
+long long				ft_atoi(char *str);
 int						ft_isascii(int c);
 int						ft_isalnum(int c);
 int						ft_isalpha(int c);

@@ -133,7 +133,7 @@ void	choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int modifier, int *do
     {
         if (*do_ra)
         {
-            rotate_both(1, lst_inf, "rr\n", param);
+            rotate(1, lst_inf, "rr\n", param);
             *do_ra = 0;
 			if (i_rotate)
             	(*i_rotate)++;
@@ -143,4 +143,20 @@ void	choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int modifier, int *do
 			rotate(1, lst_inf, "rb\n", param);
 		}
     }
+}
+
+int	test_sorted(t_list *lst, int ascending)
+{
+	t_list *tmp;
+
+	tmp = lst;
+	while (tmp->next)
+	{
+		if (*((int *)tmp->content) > *((int *)tmp->next->content) && ascending)
+			return (0);
+		else if (*((int *)tmp->content) < *((int *)tmp->next->content) && !ascending)
+			return (0);
+		tmp = tmp->next;
+	}
+	return (1);
 }

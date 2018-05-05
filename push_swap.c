@@ -26,7 +26,7 @@ void    real_qs_lst(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_list **lst_halves,
         ft_lstadd(lst_halves, ft_lstnew(&half, sizeof(half)));
         split_b(lst_inf, tab_inf,  param, &nb_instruct);
         real_qs_lst(lst_inf, tab_inf, lst_halves,  param);
-        send_in_b(lst_inf, ft_pop_value(lst_halves), tab_inf,  param, &nb_instruct);
+        send_in_b(lst_inf, ft_pop_value(lst_halves), tab_inf, param, &nb_instruct);
         real_qs_lst(lst_inf, tab_inf, lst_halves,  param);
     }
     else

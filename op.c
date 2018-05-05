@@ -16,37 +16,18 @@ void	swap(t_lst_inf *lst_inf, char *to_print, t_param param)
 {
 	int	tmp;
 
-	if (ft_strchr(to_print, 'a') && lst_inf->lst_a && lst_inf->lst_a->next)
-	{
-		tmp = *(int *)lst_inf->lst_a->next->content;
-		*((int *)lst_inf->lst_a->next->content) = get_int(lst_inf, 'a');
-		*((int *)lst_inf->lst_a->content) = tmp;
-	}
-	else if (lst_inf->lst_a && lst_inf->lst_a->next)
+	if (!ft_strchr(to_print, 'a') && lst_inf->lst_b && lst_inf->lst_b->next)
 	{
 		tmp = *(int *)lst_inf->lst_b->next->content;
 		*((int *)lst_inf->lst_b->next->content) = get_int(lst_inf, 'b');
 		*((int *)lst_inf->lst_b->content) = tmp;
 	}
-	if (!param.silent)
-		ft_printf("%s", to_print);
-	if (param.verbose)
-		show_state(lst_inf, param, to_print);
-}
-
-void	swap_both(t_lst_inf *lst_inf, char *to_print, t_param param)
-{
-	int old_silent;
-	int old_verbose;
-
-	old_silent = param.silent;
-	old_verbose = param.verbose;
-	param.silent = 1;
-	param.verbose = 0;
-	swap(lst_inf, "a\n", param);
-	swap(lst_inf, "b\n", param);
-	param.silent = old_silent;
-	param.verbose = old_verbose;
+	if (!ft_strchr(to_print, 'b') && lst_inf->lst_a && lst_inf->lst_a->next)
+	{
+		tmp = *(int *)lst_inf->lst_a->next->content;
+		*((int *)lst_inf->lst_a->next->content) = get_int(lst_inf, 'a');
+		*((int *)lst_inf->lst_a->content) = tmp;
+	}
 	if (!param.silent)
 		ft_printf("%s", to_print);
 	if (param.verbose)
@@ -75,60 +56,69 @@ void	push(t_lst_inf *lst_inf, char *to_print, t_param param)
 		show_state(lst_inf, param, to_print);
 }
 
-void	rotate(int up, t_lst_inf *lst_inf, char *to_print, t_param param)
+static void	rotate_up(t_lst_inf *lst_inf,  char *to_print)
 {
-	t_list	*first;
-	t_list	*last;
-	t_list	*lst;
+	t_list *first;
+	t_list *tmp;
 
-	if (ft_strchr(to_print, 'a'))
-		lst = lst_inf->lst_a;
-	else
-		lst = lst_inf->lst_b;
-	first = lst;
-	if (up)
+	if (!ft_strchr(to_print, 'a'))
 	{
-		if (ft_strchr(to_print, 'a'))
-			lst_inf->lst_a = lst_inf->lst_a->next;
-		else
-			lst_inf->lst_b = lst_inf->lst_b->next;
-		while (lst->next)
-			lst = lst->next;
-		lst->next = first;
+		tmp = lst_inf->lst_b;
+		lst_inf->lst_b = lst_inf->lst_b->next;
+		first = tmp;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = first;
 		first->next = NULL;
 	}
-	else
+	if (!ft_strchr(to_print, 'b'))
 	{
-		while (lst->next->next->next)
-			lst = lst->next;
-		last = lst->next->next;
-		lst->next->next = NULL;
-		last->next = first;
-		
-		if (ft_strchr(to_print, 'a'))
-			lst_inf->lst_a = last;
-		else
-			lst_inf->lst_b = last;
+		tmp = lst_inf->lst_a;
+		lst_inf->lst_a = lst_inf->lst_a->next;
+		first = tmp;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = first;
+		first->next = NULL;
 	}
-	if (!param.silent)
-		ft_printf("%s", to_print);
-	if (param.verbose)
-		show_state(lst_inf, param, to_print);
 }
 
-void	rotate_both(int up, t_lst_inf *lst_inf, char *to_print, t_param param)
+static void	rotate_down(t_lst_inf *lst_inf, char *to_print)
 {
-	int old_silent;
-	int old_verbose;
+	t_list *first;
+	t_list *last;
+	t_list *tmp;
 
-	old_silent = param.silent;
-	old_verbose = param.verbose;
-	param.silent = 1;
-	param.verbose = 0;
-	rotate(up, lst_inf, "a\n", param);
-	rotate(up, lst_inf, "b\n", param);
-	param.silent = old_silent;
-	param.verbose = old_verbose;
+	if (!ft_strchr(to_print, 'a'))
+	{
+		tmp = lst_inf->lst_b;
+		first = tmp;
+		while (tmp->next->next->next)
+			tmp = tmp->next;
+		last = tmp->next->next;
+		tmp->next->next = NULL;
+		last->next = first;
+		lst_inf->lst_b = last;
+	}
+	if (!ft_strchr(to_print, 'b'))
+	{
+		tmp = lst_inf->lst_a;
+		first = tmp;
+		while (tmp->next->next->next)
+			tmp = tmp->next;
+		last = tmp->next->next;
+		tmp->next->next = NULL;
+		last->next = first;
+		lst_inf->lst_a = last;
+	}	
+}
+
+void	rotate(int up, t_lst_inf *lst_inf, char *to_print, t_param param)
+{
+	if (up)
+		rotate_up(lst_inf, to_print);
+	else
+		rotate_down(lst_inf, to_print);
 	if (!param.silent)
 		ft_printf("%s", to_print);
 	if (param.verbose)

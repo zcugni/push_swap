@@ -3,33 +3,25 @@
 static int     is_int(char *str)
 {
     int i;
-    int is_neg;
+    long long nb;
 
-    if (ft_isdigit(str[0]))
-        is_neg = 0;
-    else if (str[0] == '-')
-        is_neg = 1;
-    else
-        return (0);
-    i = 1;
+    i = 0;
     while (str[i])
     {
         if (!ft_isdigit(str[i]))
             return (0);
         i++;
     }
-    if (i < 10 - is_neg)
+    nb = ft_atoi(str);
+    if (nb >= -2147483648 && nb <= 2147483647)
         return (1);
     else
         return (0);
-    //si on a 9 chiffres je devrais verifier si on reste inferieur au int max
-        //mais c'est chiant alors osef...
 }
 
 int    display_error()
 {
-    //ca doit etre sur la sortie d'erreur
-    ft_putstr("Error\n");
+    ft_putstr_fd("Error\n", 2);
     return(0);
 }
 
@@ -38,11 +30,14 @@ static int    read_file(int fd, t_tab_inf *tab_inf, t_list **lst_a)
     char    **arg;
     int     i;
 	int		tmp_nb;
+    int     res;
 
     arg = malloc(sizeof(char *));
     i = 0;
-    while (get_next_line(fd, arg, ' ')) //je verifie pas si le read vaut -1 en occurrence
+    while (res = get_next_line(fd, arg, ' '))
     {
+        if (res == -1)
+            return (0);
         if(is_int(*arg))
         {
             tmp_nb = ft_atoi(*arg);
@@ -82,7 +77,6 @@ int     init_param(int argc, char **argv, t_param *param, int *first_nb)
     int i;
 
     i = 1;
-    //ca va pas segfautl si argv[i][1] existe pas ?
     param->verbose = 0;
     param->full = 0;
     param->silent = 0;
@@ -102,6 +96,8 @@ int     init_param(int argc, char **argv, t_param *param, int *first_nb)
     if (argc <= i)
         return (0);
     return (1);
+    //rajouter un usage
+    //rajouter help
 }
 
 int     valid_input(int first_nb, char **argv, t_tab_inf *tab_inf, t_list **lst_a)
