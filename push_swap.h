@@ -55,7 +55,8 @@ void	choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int modifier, int *do
 void	sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *nb_instruct);
 void	little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int *nb_instruct, t_param param);
 
-int     valid_input(int argc, char **argv, t_tab_inf *tab_inf, t_list **lst_a, t_param *param);
+int     valid_input(int first_nb, char **argv, t_tab_inf *tab_inf, t_list **lst_a);
+int     init_param(int agrc, char **argv, t_param *param, int *first_nb);
 int     display_error();
 
 void    split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param, int *nb_instruct);
