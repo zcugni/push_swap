@@ -20,7 +20,6 @@ char	*ft_strndup(const char *s1, size_t n)
 	size_t	i;
 
 	i = 0;
-	printf("n : %zu\n", n);
 	if (n != 0)
 	{
 		str = malloc((n + 1) * sizeof(char));
@@ -36,6 +35,5 @@ char	*ft_strndup(const char *s1, size_t n)
 	}
 	else
 		str = NULL;
-	printf("str : %s\n", str);
 	return (str);
 }

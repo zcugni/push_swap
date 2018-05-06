@@ -24,7 +24,6 @@ static int	if_return(char **rest, char **line, int index)
 		ft_memmove(*rest, &((*rest)[index + 1]),
 				ft_strlen(&((*rest)[index + 1])) + 1);
 	}
-	printf("line : %s\n", *line);
 	return (1);
 }
 

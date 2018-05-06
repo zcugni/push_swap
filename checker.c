@@ -22,16 +22,12 @@ static int	switch_op(t_lst_inf *lst_inf, t_param param)
 		return (0);
 	while (get_next_line(0, inst, '\n'))
 	{
-		ft_printf("inst : %s\n", inst);
 		if (*inst && ft_strnstr(inst[0], "rr", 2) && ft_strlen(inst[0]) > 2)
 			up = 0;
 		else if (*inst && ft_strchr(inst[0], 'r'))
 			up = 1;
-		if (*inst && ft_strchr(inst[0], 's') == 0)
-		{
-			ft_printf("noiioojoi\n");
+		if (*inst && ft_strchr(inst[0], 's'))
 			swap(lst_inf, ft_strjoin_free(inst[0], "\n", 0), param);
-		}
 		else if (*inst && ft_strchr(inst[0], 'r'))
 			rotate(up, lst_inf, ft_strjoin_free(inst[0], "\n", 0), param);
 		else if (*inst && ft_strchr(inst[0], 'p') == 0)
@@ -54,19 +50,11 @@ int			main(int argc, char **argv)
 	//enlever la gestion des params de checker
 	if (!init_param(argc, argv, &param, &first_nb_i))
 		return (display_error());
-	param.silent = 0;
+	param.silent = 1;
 	if (valid_input(first_nb_i, argv, &tab_inf, &lst_inf.lst_a))
 	{
-		while (lst_inf.lst_a)
-		{
-			ft_printf("%i ", *((int *)lst_inf.lst_a->content));
-			lst_inf.lst_a = lst_inf.lst_a->next;
-		}
-		ft_printf("\n");
 		if (switch_op(&lst_inf, param))
 		{
-
-			exit(1);
 			if (lst_inf.lst_b || !test_sorted(lst_inf.lst_a, 1))
 				ft_putstr("KO\n");
 			else
@@ -74,7 +62,7 @@ int			main(int argc, char **argv)
 		}
 		else
 			display_error();
-	}
+	} 
 	else
 		return (display_error());
 	return (0);
