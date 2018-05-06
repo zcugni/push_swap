@@ -12,10 +12,12 @@
 
 #include "push_swap.h"
 
-void	swap(t_lst_inf *lst_inf, char *to_print, t_param param)
+void		swap(t_lst_inf *lst_inf, char *to_print, t_param param)
 {
 	int	tmp;
 
+	if (param.verbose)
+		show_state(lst_inf, param, to_print);
 	if (!ft_strchr(to_print, 'a') && lst_inf->lst_b && lst_inf->lst_b->next)
 	{
 		tmp = *(int *)lst_inf->lst_b->next->content;
@@ -34,10 +36,11 @@ void	swap(t_lst_inf *lst_inf, char *to_print, t_param param)
 		show_state(lst_inf, param, to_print);
 }
 
-void	push(t_lst_inf *lst_inf, char *to_print, t_param param)
+void		push(t_lst_inf *lst_inf, char *to_print, t_param param)
 {
 	t_list *new;
 
+	new = NULL;
 	if (ft_strchr(to_print, 'a') && lst_inf->lst_b)
 	{
 		new = ft_pop(&lst_inf->lst_b);
@@ -54,9 +57,11 @@ void	push(t_lst_inf *lst_inf, char *to_print, t_param param)
 		ft_printf("%s", to_print);
 	if (param.verbose)
 		show_state(lst_inf, param, to_print);
+	//if (new)
+	//	free(new);
 }
 
-static void	rotate_up(t_lst_inf *lst_inf,  char *to_print)
+static void	rotate_up(t_lst_inf *lst_inf, char *to_print)
 {
 	t_list *first;
 	t_list *tmp;
@@ -85,35 +90,32 @@ static void	rotate_up(t_lst_inf *lst_inf,  char *to_print)
 
 static void	rotate_down(t_lst_inf *lst_inf, char *to_print)
 {
-	t_list *first;
 	t_list *last;
 	t_list *tmp;
 
 	if (!ft_strchr(to_print, 'a'))
 	{
 		tmp = lst_inf->lst_b;
-		first = tmp;
 		while (tmp->next->next->next)
 			tmp = tmp->next;
 		last = tmp->next->next;
 		tmp->next->next = NULL;
-		last->next = first;
+		last->next = lst_inf->lst_b;
 		lst_inf->lst_b = last;
 	}
 	if (!ft_strchr(to_print, 'b'))
 	{
 		tmp = lst_inf->lst_a;
-		first = tmp;
 		while (tmp->next->next->next)
 			tmp = tmp->next;
 		last = tmp->next->next;
 		tmp->next->next = NULL;
-		last->next = first;
+		last->next = lst_inf->lst_a;
 		lst_inf->lst_a = last;
-	}	
+	}
 }
 
-void	rotate(int up, t_lst_inf *lst_inf, char *to_print, t_param param)
+void		rotate(int up, t_lst_inf *lst_inf, char *to_print, t_param param)
 {
 	if (up)
 		rotate_up(lst_inf, to_print);

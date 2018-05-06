@@ -28,7 +28,7 @@ SRCS_LST = ft_lstadd.c ft_lstiter.c ft_lstmap.c ft_lstcpy.c ft_lstnew.c \
 			ft_pop_value.c
 
 SRCS_MEM = ft_memmove.c ft_memchr.c ft_memcmp.c ft_memalloc.c ft_memdel.c \
-			ft_memcpy.c ft_bzero.c ft_memset.c ft_memccpy.c
+			ft_memcpy.c ft_bzero.c ft_memset.c ft_memccpy.c get_leaks.c
 
 SRCS_IO = ft_putchar.c ft_putstr.c ft_putendl.c ft_putnbr.c ft_putchar_fd.c \
 			ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c get_next_line.c

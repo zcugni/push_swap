@@ -10,35 +10,39 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "push_swap.h"
+#include "push_swap.h"
 
 static int	switch_op(t_lst_inf *lst_inf, t_param param)
 {
-	char    **instruction;
-	int     up;
+	char	**inst;
+	int		up;
 
-	instruction = malloc(sizeof(char *));
-	if (!instruction)
+	inst = malloc(sizeof(char *));
+	if (!inst)
 		return (0);
-	while (get_next_line(0, instruction, '\n'))
+	while (get_next_line(0, inst, '\n'))
 	{
-		if (ft_strnstr(instruction[0], "rr", 2) && ft_strlen(instruction[0]) > 2)
+		ft_printf("inst : %s\n", inst);
+		if (*inst && ft_strnstr(inst[0], "rr", 2) && ft_strlen(inst[0]) > 2)
 			up = 0;
-		else if (ft_strchr(instruction[0], 'r'))
+		else if (*inst && ft_strchr(inst[0], 'r'))
 			up = 1;
-		if (ft_strchr(instruction[0], 's') == 0)
-			swap(lst_inf, ft_strjoin_free(instruction[0], "\n", 0), param);
-		else if (ft_strchr(instruction[0], 'r'))
-			rotate(up, lst_inf, ft_strjoin_free(instruction[0], "\n", 0), param);
-		else if (ft_strchr(instruction[0], 'p') == 0)
-			push(lst_inf,  ft_strjoin_free(instruction[0], "\n", 0), param);
+		if (*inst && ft_strchr(inst[0], 's') == 0)
+		{
+			ft_printf("noiioojoi\n");
+			swap(lst_inf, ft_strjoin_free(inst[0], "\n", 0), param);
+		}
+		else if (*inst && ft_strchr(inst[0], 'r'))
+			rotate(up, lst_inf, ft_strjoin_free(inst[0], "\n", 0), param);
+		else if (*inst && ft_strchr(inst[0], 'p') == 0)
+			push(lst_inf, ft_strjoin_free(inst[0], "\n", 0), param);
 		else
 			return (0);
 	}
 	return (1);
 }
 
-int main(int argc, char **argv)
+int			main(int argc, char **argv)
 {
 	t_lst_inf	lst_inf;
 	t_tab_inf	tab_inf;
@@ -48,14 +52,22 @@ int main(int argc, char **argv)
 	lst_inf.lst_b = NULL;
 	lst_inf.lst_a = NULL;
 	//enlever la gestion des params de checker
-	if(!init_param(argc, argv, &param, &first_nb_i))
-        return (display_error());
-	param.silent = 1;
+	if (!init_param(argc, argv, &param, &first_nb_i))
+		return (display_error());
+	param.silent = 0;
 	if (valid_input(first_nb_i, argv, &tab_inf, &lst_inf.lst_a))
 	{
+		while (lst_inf.lst_a)
+		{
+			ft_printf("%i ", *((int *)lst_inf.lst_a->content));
+			lst_inf.lst_a = lst_inf.lst_a->next;
+		}
+		ft_printf("\n");
 		if (switch_op(&lst_inf, param))
 		{
-			if (lst_inf.lst_b || !test_sorted(lst_inf.lst_a, 1))	
+
+			exit(1);
+			if (lst_inf.lst_b || !test_sorted(lst_inf.lst_a, 1))
 				ft_putstr("KO\n");
 			else
 				ft_putstr("OK\n");

@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pop.c                                           :+:      :+:    :+:   */
+/*   get_leaks.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/05/06 12:07:02 by zcugni            #+#    #+#             */
-/*   Updated: 2018/05/06 12:07:03 by zcugni           ###   ########.fr       */
+/*   Created: 2018/05/06 12:07:54 by zcugni            #+#    #+#             */
+/*   Updated: 2018/05/06 12:07:55 by zcugni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_pop(t_list **lst)
-{
-	t_list	*new;
-	t_list	*tmp;
+#include <stdio.h>
 
-	new = ft_lstnew((*lst)->content, (*lst)->content_size);
-	tmp = *lst;
-	*lst = (*lst)->next;
-	free(tmp->content);
-	free(tmp);
-	return (new);
+void	get_leaks(char *msg)
+{
+	system("leaks push_swap");
+	ft_printf("\033[31m%s\033[0m", msg);
+	getchar();
 }

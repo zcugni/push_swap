@@ -12,21 +12,27 @@
 
 #include "libft.h"
 
+#include "stdio.h"
+
 static int	if_return(char **rest, char **line, int index)
 {
 	*line = ft_strndup(*rest, index);
 	if (index == (int)ft_strlen(*rest) - 1)
 		ft_strdel(rest);
 	else
+	{
 		ft_memmove(*rest, &((*rest)[index + 1]),
 				ft_strlen(&((*rest)[index + 1])) + 1);
+	}
+	printf("line : %s\n", *line);
 	return (1);
 }
 
-static void	update_line(char **line, char **rest)
+static int	update_line(char **line, char **rest)
 {
 	*line = ft_strdup(*rest);
 	ft_strdel(rest);
+	return (1);
 }
 
 char		*ft_strjoin_overlap(char **s1, char **s2)
@@ -73,10 +79,10 @@ int			get_next_line(const int fd, char **line, char separator)
 			buff = ft_strnew(BUFF_SIZE + 1);
 			if ((state = read(fd, buff, BUFF_SIZE)) == 0)
 			{
+				free(buff);
 				if (!rest[0])
 					return (0);
-				update_line(line, &rest);
-				return (1);
+				return (update_line(line, &rest));
 			}
 			else if (state == -1)
 				return (state);
