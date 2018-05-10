@@ -17,7 +17,7 @@ static void	send_in_a(t_split_status status, t_lst_inf *lst_inf,
 {
 	while (status.i_sent < status.nb_to_send)
 		if (get_int(lst_inf, 'b') >= tab_inf->sorted[status.pivot_min] ||
-			get_int(lst_inf, 'b') == get_desired(tab_inf))
+							get_int(lst_inf, 'b') == get_desired(tab_inf))
 		{
 			if (status.do_ra)
 			{
@@ -39,7 +39,7 @@ static void	send_in_a(t_split_status status, t_lst_inf *lst_inf,
 			status.i_sent++;
 		}
 		else
-			choose_rotate(lst_inf, tab_inf, 3, &status, param); //(-3)
+			choose_rotate(lst_inf, tab_inf, 3, &status, param);
 }
 
 void		split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)

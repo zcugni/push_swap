@@ -34,11 +34,11 @@ objs/%.o : %.c
 
 all: $(NAME_1) $(NAME_2)
 
-$(NAME_1): lmake $(OBJS_1)
+$(NAME_1): lmake $(OBJS_1) push_swap.h
 	@echo "compilation : " $(NAME_1)
 	@gcc $(FLAGS) $(OBJS_1) -L$(L_PATH) -l$(LIB) -o $(NAME_1)
 
-$(NAME_2): lmake $(OBJS_2)
+$(NAME_2): lmake $(OBJS_2) push_swap.h
 	@echo "compilation : " $(NAME_2)
 	@gcc $(FLAGS) $(OBJS_2) -L$(L_PATH) -l$(LIB) -o $(NAME_2) 
 

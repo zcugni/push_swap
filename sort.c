@@ -12,8 +12,8 @@
 
 #include "push_swap.h"
 
-static void	choose_op(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_split_status status,
-	t_param param)
+static void	choose_op(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
+										t_split_status status, t_param param)
 {
 	if (get_int(lst_inf, 'b') == get_desired(tab_inf))
 	{

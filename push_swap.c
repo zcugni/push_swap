@@ -52,10 +52,7 @@ static void	get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 		qs_lst(lst_inf, tab_inf, &lst_halves, param);
 	}
 	else
-	{
-		//en vrai, ca marche avec send_half ici, mais vu que je fais que des ra et pas des rra, c'est moins opti
-		little_list(lst_inf, tab_inf, param); // a faire mieux
-	}
+		little_list(lst_inf, tab_inf, param);
 }
 
 int			main(int argc, char **argv)
@@ -72,7 +69,10 @@ int			main(int argc, char **argv)
 	if (!init_param(argc, argv, &param, &first_nb_i))
 		return (display_error());
 	if (valid_input(first_nb_i, argv, &tab_inf, &(lst_inf.lst_a)))
-		get_instruct(&lst_inf, &tab_inf, param);
+	{
+		if (!test_sorted(lst_inf.lst_a, 1))
+			get_instruct(&lst_inf, &tab_inf, param);
+	}
 	else
 		return (display_error());
 	//get_leaks("end\n");

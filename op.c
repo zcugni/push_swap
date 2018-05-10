@@ -16,8 +16,6 @@ void		swap(t_lst_inf *lst_inf, char *to_print, t_param param)
 {
 	int	tmp;
 
-	if (param.verbose)
-		show_state(lst_inf, param, to_print);
 	if (!ft_strchr(to_print, 'a') && lst_inf->lst_b && lst_inf->lst_b->next)
 	{
 		tmp = *(int *)lst_inf->lst_b->next->content;
@@ -64,7 +62,7 @@ static void	rotate_up(t_lst_inf *lst_inf, char *to_print)
 	t_list *first;
 	t_list *tmp;
 
-	if (!ft_strchr(to_print, 'a'))
+	if (!ft_strchr(to_print, 'a') && lst_inf->lst_b && lst_inf->lst_b->next)
 	{
 		tmp = lst_inf->lst_b;
 		lst_inf->lst_b = lst_inf->lst_b->next;
@@ -74,7 +72,7 @@ static void	rotate_up(t_lst_inf *lst_inf, char *to_print)
 		tmp->next = first;
 		first->next = NULL;
 	}
-	if (!ft_strchr(to_print, 'b'))
+	if (!ft_strchr(to_print, 'b') && lst_inf->lst_a && lst_inf->lst_a->next)
 	{
 		tmp = lst_inf->lst_a;
 		lst_inf->lst_a = lst_inf->lst_a->next;
@@ -91,23 +89,23 @@ static void	rotate_down(t_lst_inf *lst_inf, char *to_print)
 	t_list *last;
 	t_list *tmp;
 
-	if (!ft_strchr(to_print, 'a'))
+	if (!ft_strchr(to_print, 'a') && lst_inf->lst_b && lst_inf->lst_b->next)
 	{
 		tmp = lst_inf->lst_b;
-		while (tmp->next->next->next)
+		while (tmp->next->next)
 			tmp = tmp->next;
-		last = tmp->next->next;
-		tmp->next->next = NULL;
+		last = tmp->next;
+		tmp->next = NULL;
 		last->next = lst_inf->lst_b;
 		lst_inf->lst_b = last;
 	}
-	if (!ft_strchr(to_print, 'b'))
+	if (!ft_strchr(to_print, 'b') && lst_inf->lst_a && lst_inf->lst_a->next)
 	{
 		tmp = lst_inf->lst_a;
-		while (tmp->next->next->next)
+		while (tmp->next->next)
 			tmp = tmp->next;
-		last = tmp->next->next;
-		tmp->next->next = NULL;
+		last = tmp->next;
+		tmp->next = NULL;
 		last->next = lst_inf->lst_a;
 		lst_inf->lst_a = last;
 	}

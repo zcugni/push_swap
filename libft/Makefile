@@ -67,7 +67,7 @@ objs/%.o : srcs/misc/%.c
 	@echo "compilation : " $*
 	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) libft.h
 	@echo "compilation : " $(NAME)
 	@ar rc $(NAME) $(OBJS)
 	@ranlib $(NAME)

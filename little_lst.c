@@ -12,7 +12,7 @@
 
 #include "push_swap.h"
 
-static int	should_swap(t_list *lst, t_tab_inf *tab_inf, int nb)
+/*static int	should_swap(t_list *lst, t_tab_inf *tab_inf, int nb)
 {
 	int up;
 	int down;
@@ -21,6 +21,8 @@ static int	should_swap(t_list *lst, t_tab_inf *tab_inf, int nb)
 	i = 0;
 	while (tab_inf->sorted[i] != nb)
 		i++;
+	printf("i, nb : %i, %i\n", i, nb);
+	
 	if (i == 0)
 		down = tab_inf->sorted[0];
 	else
@@ -29,15 +31,20 @@ static int	should_swap(t_list *lst, t_tab_inf *tab_inf, int nb)
 		up = tab_inf->sorted[i];
 	else
 		up = tab_inf->sorted[i + 1];
+
+	printf("up, down, lst : %i, %i, %i\n", up, down, *((int *)lst->content));
 	if (*((int *)lst->next->content) == down)
 		return (1);
+	return (0);
 	while (lst->next)
 		lst = lst->next;
+	printf("lst : %i\n", *((int *)lst->content));
+	exit(1);
 	if (*((int *)lst->content) == up)
 		return (0);
 	else
 		return (1);
-}
+}*/
 
 static void	choose_op(int asc, int need_swap, t_lst_inf *lst_inf, t_param param)
 {
@@ -64,41 +71,30 @@ static int	test_diff(t_list *lst, int ascending)
 
 	nb = *((int *)lst->content);
 	next_nb = *((int *)lst->next->content);
-	if ((nb < next_nb && !ascending) ||
-		(nb > next_nb && ascending))
+	if ((nb < next_nb && !ascending) || (nb > next_nb && ascending))
 		return (1);
 	else
 		return (0);
 }
 
-static void	sort_mini(int ascending, t_lst_inf *lst_inf, t_tab_inf *tab_inf,
+static void	sort_mini(int ascending, t_lst_inf *lst_inf,
 	t_param param)
 {
-	t_list	*tmp;
 	t_list	*lst;
-	int		first;
-	int		need_swap;
 
-	first = 1;
 	lst = lst_inf->lst_a;
 	if (!ascending)
 		lst = lst_inf->lst_b;
-	tmp = lst;
 	while (!test_sorted(lst, ascending))
-		if (test_diff(tmp, ascending))
-		{
-			need_swap = 0;
-			if (first && should_swap(lst, tab_inf, *((int *)tmp->content)))
-				need_swap = 1;
-			choose_op(ascending, need_swap, lst_inf, param);
-			tmp = lst;
-			first = 1;
-		}
+	{
+		if (test_diff(lst, ascending))
+			choose_op(ascending, 1, lst_inf, param);
 		else
-		{
-			first = 0;
-			tmp = tmp->next;
-		}
+			choose_op(ascending, 0, lst_inf, param);
+		lst = lst_inf->lst_a;
+		if (!ascending)
+			lst = lst_inf->lst_b;
+	}
 }
 
 void		little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
@@ -116,11 +112,12 @@ void		little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 			else
 				rotate(lst_inf, "ra\n", param);
 		}
-		sort_mini(1, lst_inf, tab_inf, param);
-		sort_mini(0, lst_inf, tab_inf, param);
+		exit(1);
+		sort_mini(1, lst_inf, param);
+		sort_mini(0, lst_inf, param);
 		while (lst_inf->lst_b)
 			push(lst_inf, "pa\n", param);
 	}
 	else
-		sort_mini(1, lst_inf, tab_inf, param);
+		sort_mini(1, lst_inf, param);
 }

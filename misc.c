@@ -45,7 +45,7 @@ int		test_sorted(t_list *lst, int ascending)
 		if (*((int *)tmp->content) > *((int *)tmp->next->content) && ascending)
 			return (0);
 		else if (*((int *)tmp->content) < *((int *)tmp->next->content)
-			&& !ascending)
+																&& !ascending)
 			return (0);
 		tmp = tmp->next;
 	}
@@ -57,7 +57,9 @@ int		is_int(char *str)
 	int			i;
 	long long	nb;
 
-	i = 0;
+	if (str[0] != '-' && !ft_isdigit(str[0]))
+		return(0);
+	i = 1;
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
