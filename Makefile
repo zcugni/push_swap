@@ -14,10 +14,9 @@ NAME_1 = checker
 
 NAME_2 = push_swap
 
-#va falloir que je change ca apres
-SRCS_1 = checker.c valid_input.c misc.c getter.c op.c display.c
+SRCS_1 = checker.c valid_input.c misc.c getter.c op.c display.c qs.c
 
-SRCS_2 = push_swap.c op.c misc.c valid_input.c sort.c move.c getter.c little_lst.c display.c
+SRCS_2 = push_swap.c op.c misc.c valid_input.c sort.c move.c getter.c little_lst.c display.c qs.c
 
 OBJS_1 = $(SRCS_1:%.c=objs/%.o)
 

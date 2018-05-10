@@ -50,25 +50,31 @@ typedef struct	s_split_status
 
 void			swap(t_lst_inf *lst_inf, char *to_print, t_param param);
 void			push(t_lst_inf *lst_inf, char *to_print, t_param param);
-void			rotate(int up, t_lst_inf *lst_inf, char *to_print,
-					t_param param);
+void			rotate(t_lst_inf *lst_inf, char *to_print, t_param param);
 
 int				quicksort(int *arr, int len);
 void			show_state(t_lst_inf *lst_inf, t_param param, char *last_op);
-void			choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int modifier, int *do_ra, int *i_rotate, t_param param);
+void			choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
+	int modifier, t_split_status *status, t_param param);
 int				test_sorted(t_list *lst, int ascending);
 int				is_int(char *str);
 
-void			sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param);
-void			little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param);
+void			sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
+	t_param param);
+void			little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
+	t_param param);
 
-int				valid_input(int first_nb, char **argv, t_tab_inf *tab_inf, t_list **lst_a);
-int				init_param(int agrc, char **argv, t_param *param, int *first_nb);
+int				valid_input(int first_nb, char **argv, t_tab_inf *tab_inf,
+	t_list **lst_a);
+int				init_param(int agrc, char **argv, t_param *param,
+	int *first_nb);
 int				display_error();
 
 void			split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param);
-void			send_half(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int pivot_min, int nb_to_send, t_param param);
-void			send_in_b(t_lst_inf *lst_inf, int diff, t_tab_inf *tab_inf, t_param param);
+void			send_half(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
+	t_split_status status, t_param param);
+void			send_in_b(t_lst_inf *lst_inf, int diff, t_tab_inf *tab_inf,
+	t_param param);
 
 int				get_desired(t_tab_inf *tab_inf);
 int				get_int(t_lst_inf *lst_inf, char lst_letter);

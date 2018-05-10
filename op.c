@@ -57,8 +57,6 @@ void		push(t_lst_inf *lst_inf, char *to_print, t_param param)
 		ft_printf("%s", to_print);
 	if (param.verbose)
 		show_state(lst_inf, param, to_print);
-	//if (new)
-	//	free(new);
 }
 
 static void	rotate_up(t_lst_inf *lst_inf, char *to_print)
@@ -115,12 +113,12 @@ static void	rotate_down(t_lst_inf *lst_inf, char *to_print)
 	}
 }
 
-void		rotate(int up, t_lst_inf *lst_inf, char *to_print, t_param param)
+void		rotate(t_lst_inf *lst_inf, char *to_print, t_param param)
 {
-	if (up)
-		rotate_up(lst_inf, to_print);
-	else
+	if (ft_strstr(to_print, "rr") && ft_strlen(to_print) > 3)
 		rotate_down(lst_inf, to_print);
+	else
+		rotate_up(lst_inf, to_print);
 	if (!param.silent)
 		ft_printf("%s", to_print);
 	if (param.verbose)

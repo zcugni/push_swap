@@ -12,7 +12,7 @@
 
 #include "push_swap.h"
 
-static void		show_lst(t_list *tmp_lst, int lst_len, t_param param, char last_op)
+static void		show_lst(t_list *lst, int lst_len, t_param param, char last_op)
 {
 	int		nb_to_show;
 	int		i;
@@ -21,22 +21,21 @@ static void		show_lst(t_list *tmp_lst, int lst_len, t_param param, char last_op)
 	i = 0;
 	if ((last_op == 'p' || last_op == 'u') && param.color)
 		ft_printf("\033[32m_ \033[0m");
-	while (tmp_lst)
+	while (lst)
 	{
 		if (i < nb_to_show || i >= lst_len - nb_to_show || param.full)
 		{
 			if (param.color &&
 			((i == 0 && (last_op == 's' || last_op == 'r' || last_op == 'd')) ||
 			(i == 1 && last_op == 's') ||
-			(!tmp_lst->next && last_op == 'u')))
-				ft_printf("\033[32m%i\033[0m ", *((int *)tmp_lst->content));
+			(!lst->next && last_op == 'u')))
+				ft_printf("\033[32m%i\033[0m ", *((int *)lst->content));
 			else
-				ft_printf("%i ", *((int *)tmp_lst->content));
+				ft_printf("%i ", *((int *)lst->content));
 		}
-		if (i == nb_to_show && tmp_lst->next && !param.full)
+		if (i++ == nb_to_show && lst->next && !param.full)
 			ft_printf("... ");
-		tmp_lst = tmp_lst->next;
-		i++;
+		lst = lst->next;
 	}
 	if (param.color && last_op == 'd')
 		ft_printf("\033[32m_\033[0m");
@@ -47,13 +46,14 @@ static	char	define_code(char *last_op, char letter)
 	char code;
 
 	code = ' ';
-	if (ft_strcmp(last_op, "ss\n") == 0 ||
+	if (!ft_strcmp(last_op, "ss\n") ||
 		(ft_strchr(last_op, 's') && ft_strchr(last_op, letter)))
 		code = 's';
-	else if (ft_strcmp(last_op, "rr\n") == 0 ||
-		(ft_strchr(last_op, 'r') && ft_strchr(last_op, letter) && last_op[2] == '\n'))
+	else if (!ft_strcmp(last_op, "rr\n") ||
+	(ft_strchr(last_op, 'r') && ft_strchr(last_op, letter) &&
+	last_op[2] == '\n'))
 		code = 'u';
-	else if (ft_strcmp(last_op, "rrr\n") == 0 ||
+	else if (!ft_strcmp(last_op, "rrr\n") ||
 		(ft_strchr(last_op, 'r') && ft_strchr(last_op, letter)))
 		code = 'd';
 	else if ((ft_strchr(last_op, 'p') && ft_strchr(last_op, letter)))

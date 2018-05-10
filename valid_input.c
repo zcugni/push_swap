@@ -99,7 +99,6 @@ int				valid_input(int first_nb, char **argv, t_tab_inf *tab_inf, t_list **lst_a
 	t_list	*tmp_lst;
 
 	//already_sorted = 1;
-
 	fd = open(argv[first_nb], O_RDONLY);
 	if (!is_int(argv[first_nb]) && fd == -1)
 		return (0);

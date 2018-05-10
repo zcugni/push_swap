@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "push_swap.h"
-int nb_instruct = 0;
 
 static void	qs_lst(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
 	t_list **lst_halves, t_param param)
@@ -35,19 +34,21 @@ static void	qs_lst(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
 
 static void	get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 {
-	t_list *lst_halves;
+	t_list			*lst_halves;
+	t_split_status	status;
 
 	lst_halves = NULL;
 	tab_inf->next_index = 0;
 	lst_inf->len_b = 0;
+	status.nb_to_send = tab_inf->sorted_len / 2;
+	status.pivot_min = 0;
 	if (tab_inf->sorted_len > 9)
 	{
-		send_half(lst_inf, tab_inf, 0, tab_inf->sorted_len / 2,
-			param);
+		send_half(lst_inf, tab_inf, status, param);
 		qs_lst(lst_inf, tab_inf, &lst_halves, param);
-		send_half(lst_inf, tab_inf, tab_inf->sorted_len / 2,
-			tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2,
-			param);
+		status.pivot_min = tab_inf->sorted_len / 2;
+		status.nb_to_send = tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2;
+		send_half(lst_inf, tab_inf, status, param);
 		qs_lst(lst_inf, tab_inf, &lst_halves, param);
 	}
 	else
@@ -66,6 +67,8 @@ int			main(int argc, char **argv)
 
 	lst_inf.lst_b = NULL;
 	lst_inf.lst_a = NULL;
+	if (argc == 1)
+		return (0);
 	if (!init_param(argc, argv, &param, &first_nb_i))
 		return (display_error());
 	if (valid_input(first_nb_i, argv, &tab_inf, &(lst_inf.lst_a)))

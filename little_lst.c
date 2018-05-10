@@ -51,9 +51,9 @@ static void	choose_op(int asc, int need_swap, t_lst_inf *lst_inf, t_param param)
 	else
 	{
 		if (asc)
-			rotate(0, lst_inf, "rra\n", param);
+			rotate(lst_inf, "rra\n", param);
 		else
-			rotate(0, lst_inf, "rrb\n", param);
+			rotate(lst_inf, "rrb\n", param);
 	}
 }
 
@@ -114,7 +114,7 @@ void		little_list(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 			if (get_int(lst_inf, 'a') < half)
 				push(lst_inf, "pb\n", param);
 			else
-				rotate(1, lst_inf, "ra\n", param);
+				rotate(lst_inf, "ra\n", param);
 		}
 		sort_mini(1, lst_inf, tab_inf, param);
 		sort_mini(0, lst_inf, tab_inf, param);

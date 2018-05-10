@@ -12,70 +12,26 @@
 
 #include "push_swap.h"
 
-static void	swap_tab(int *arr, int index_1, int index_2)
-{
-	int tmp;
-
-	tmp = arr[index_1];
-	arr[index_1] = arr[index_2];
-	arr[index_2] = tmp;
-}
-
-int		quicksort(int *arr, int len) //a ameliorer
-{
-	int i;
-	int first_supp;
-
-	i = 1;
-	first_supp = 0;
-	while (i < len)
-	{
-		if (arr[i] > arr[0] && first_supp == 0)
-			first_supp = i;
-		else if (arr[i] < arr[0] && first_supp != 0)
-			swap_tab(arr, first_supp++, i);
-		else if (arr[i] == arr[0])
-			return (0);
-		i++;
-	}
-	if (len > 1)
-	{
-		if (first_supp == 0)
-		{
-			swap_tab(arr, first_supp, 1);
-			if (!quicksort(arr, len))
-				return (0);
-		}
-		else
-		{
-			swap_tab(arr, first_supp - 1, 0);
-			if (!quicksort(arr, first_supp))
-				return (0);
-			if (!quicksort(&arr[first_supp], len - first_supp))
-				return (0);
-		}
-	}
-	return (1);
-}
-
-void	choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int modifier, int *do_ra, int *i_rotate, t_param param)
+void	choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int modifier,
+	t_split_status *status, t_param param)
 {
 	int i;
 
-	i = lst_findi(lst_inf->lst_b, &(tab_inf->sorted[tab_inf->next_index]), sizeof(tab_inf->sorted[tab_inf->next_index]));
+	i = lst_findi(lst_inf->lst_b, &(tab_inf->sorted[tab_inf->next_index]),
+		sizeof(tab_inf->sorted[tab_inf->next_index]));
 	if (i > lst_inf->len_b / 2 + lst_inf->len_b / 2 / 2 + modifier)
-		rotate(0, lst_inf, "rrb\n", param);
+		rotate(lst_inf, "rrb\n", param);
 	else
 	{
-		if (*do_ra)
+		if (status->do_ra)
 		{
-			rotate(1, lst_inf, "rr\n", param);
-			*do_ra = 0;
-			if (i_rotate)
-				(*i_rotate)++;
+			rotate(lst_inf, "rr\n", param);
+			status->do_ra = 0;
+			if (status->i_rotated)
+				(status->i_rotated)++;
 		}
 		else
-			rotate(1, lst_inf, "rb\n", param);
+			rotate(lst_inf, "rb\n", param);
 	}
 }
 
