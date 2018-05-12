@@ -79,5 +79,9 @@ void			send_in_b(t_lst_inf *lst_inf, int diff, t_tab_inf *tab_inf,
 int				get_desired(t_tab_inf *tab_inf);
 int				get_int(t_lst_inf *lst_inf, char lst_letter);
 int				get_int_lst(t_list *lst);
+void	sort_mini(int ascending, t_lst_inf *lst_inf,
+	t_param param);
+
+	void	sort_mini_v2(int ascending, int pivot_min, int pivot_max, t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param);
 
 #endif

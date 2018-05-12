@@ -42,17 +42,31 @@ static void	get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 	lst_inf->len_b = 0;
 	status.nb_to_send = tab_inf->sorted_len / 2;
 	status.pivot_min = 0;
-	if (tab_inf->sorted_len > 9)
+	if (tab_inf->sorted_len > 3)
 	{
 		send_half(lst_inf, tab_inf, status, param);
-		qs_lst(lst_inf, tab_inf, &lst_halves, param);
-		status.pivot_min = tab_inf->sorted_len / 2;
-		status.nb_to_send = tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2;
-		send_half(lst_inf, tab_inf, status, param);
-		qs_lst(lst_inf, tab_inf, &lst_halves, param);
+		if (tab_inf->sorted_len > 9)
+		{
+			qs_lst(lst_inf, tab_inf, &lst_halves, param);
+			status.pivot_min = tab_inf->sorted_len / 2;
+			status.nb_to_send = tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2;
+			send_half(lst_inf, tab_inf, status, param);
+			qs_lst(lst_inf, tab_inf, &lst_halves, param);
+		}
+		else
+		{
+			//exit(1);
+			status.pivot_min = tab_inf->sorted_len / 2;
+			sort_mini_v2(1, status.pivot_min, tab_inf->sorted_len - 1, lst_inf, tab_inf, param);
+			status.pivot_min = 0;
+			//exit(1);
+			sort_mini_v2(0, status.pivot_min, tab_inf->sorted_len / 2 - 1, lst_inf, tab_inf, param);
+			while (lst_inf->lst_b)
+				push(lst_inf, "pa\n", param);
+		}
 	}
 	else
-		little_list(lst_inf, tab_inf, param);
+		sort_mini_v2(1, status.pivot_min, tab_inf->sorted_len - 1, lst_inf, tab_inf, param);
 }
 
 int			main(int argc, char **argv)
