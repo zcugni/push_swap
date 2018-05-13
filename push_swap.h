@@ -48,6 +48,15 @@ typedef struct	s_split_status
 	int do_ra;
 }				t_split_status;
 
+typedef struct	s_sort_status
+{
+	int	p_min_i;
+	int p_max_i;
+	int p_min_val;
+	int p_max_val;
+	int	asc;
+}				t_sort_status;
+
 void			swap(t_lst_inf *lst_inf, char *to_print, t_param param);
 void			push(t_lst_inf *lst_inf, char *to_print, t_param param);
 void			rotate(t_lst_inf *lst_inf, char *to_print, t_param param);
@@ -79,9 +88,6 @@ void			send_in_b(t_lst_inf *lst_inf, int diff, t_tab_inf *tab_inf,
 int				get_desired(t_tab_inf *tab_inf);
 int				get_int(t_lst_inf *lst_inf, char lst_letter);
 int				get_int_lst(t_list *lst);
-void	sort_mini(int ascending, t_lst_inf *lst_inf,
-	t_param param);
-
-	void	sort_mini_v2(int ascending, int pivot_min, int pivot_max, t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param);
+void			sort_mini_v2(t_sort_status sort_stat, t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param);
 
 #endif

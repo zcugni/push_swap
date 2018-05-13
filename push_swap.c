@@ -28,45 +28,55 @@ static void	qs_lst(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
 	}
 	else
 	{
+		//exit(1);
 		sort_batch(lst_inf, tab_inf, param);
+		//exit(1);
 	}
 }
 
 static void	get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 {
 	t_list			*lst_halves;
-	t_split_status	status;
+	t_split_status	split_stat;
+	t_sort_status	sort_stat;
 
 	lst_halves = NULL;
 	tab_inf->next_index = 0;
 	lst_inf->len_b = 0;
-	status.nb_to_send = tab_inf->sorted_len / 2;
-	status.pivot_min = 0;
+	split_stat.nb_to_send = tab_inf->sorted_len / 2;
+	split_stat.pivot_min = 0;
 	if (tab_inf->sorted_len > 3)
 	{
-		send_half(lst_inf, tab_inf, status, param);
+		send_half(lst_inf, tab_inf, split_stat, param);
 		if (tab_inf->sorted_len > 9)
 		{
 			qs_lst(lst_inf, tab_inf, &lst_halves, param);
-			status.pivot_min = tab_inf->sorted_len / 2;
-			status.nb_to_send = tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2;
-			send_half(lst_inf, tab_inf, status, param);
+			split_stat.pivot_min = tab_inf->sorted_len / 2;
+			split_stat.nb_to_send = tab_inf->sorted_len / 2 +
+														tab_inf->sorted_len % 2;
+			send_half(lst_inf, tab_inf, split_stat, param);
 			qs_lst(lst_inf, tab_inf, &lst_halves, param);
 		}
 		else
 		{
-			//exit(1);
-			status.pivot_min = tab_inf->sorted_len / 2;
-			sort_mini_v2(1, status.pivot_min, tab_inf->sorted_len - 1, lst_inf, tab_inf, param);
-			status.pivot_min = 0;
-			//exit(1);
-			sort_mini_v2(0, status.pivot_min, tab_inf->sorted_len / 2 - 1, lst_inf, tab_inf, param);
+			sort_stat.p_min_i = tab_inf->sorted_len / 2;
+			sort_stat.p_max_i =  tab_inf->sorted_len - 1;
+			sort_stat.asc = 1;
+			sort_mini_v2(sort_stat, lst_inf, tab_inf, param);
+			sort_stat.p_min_i = 0;
+			sort_stat.p_max_i =  tab_inf->sorted_len / 2 - 1;
+			sort_stat.asc = 0;
+			sort_mini_v2(sort_stat, lst_inf, tab_inf, param);
 			while (lst_inf->lst_b)
 				push(lst_inf, "pa\n", param);
 		}
 	}
 	else
-		sort_mini_v2(1, status.pivot_min, tab_inf->sorted_len - 1, lst_inf, tab_inf, param);
+	{
+		sort_stat.p_min_i = 0;
+		sort_stat.p_max_i =  tab_inf->sorted_len;
+		sort_mini_v2(sort_stat, lst_inf, tab_inf, param);
+	}
 }
 
 int			main(int argc, char **argv)
