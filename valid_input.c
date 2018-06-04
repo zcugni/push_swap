@@ -12,6 +12,12 @@
 
 #include "push_swap.h"
 
+static int		close_ret(int fd, int val_to_return)
+{
+	close(fd);
+	return (val_to_return);
+}
+
 static int		read_file(int fd, t_tab_inf *tab_inf, t_list **lst_a)
 {
 	char	**arg;
@@ -25,9 +31,7 @@ static int		read_file(int fd, t_tab_inf *tab_inf, t_list **lst_a)
 	i = 0;
 	while ((res = get_next_line(fd, arg, ' ')))
 	{
-		if (res == -1)
-			return (0);
-		if (is_int(*arg))
+		if (res != -1 && is_int(*arg))
 		{
 			tmp_nb = ft_atoi(*arg);
 			ft_lstappend(lst_a, ft_lstnew(&tmp_nb, sizeof(tmp_nb)));
@@ -37,7 +41,6 @@ static int		read_file(int fd, t_tab_inf *tab_inf, t_list **lst_a)
 		ft_strdel(arg);
 		i++;
 	}
-	close(fd);
 	free(arg);
 	tab_inf->sorted_len = i;
 	return (1);
@@ -90,7 +93,8 @@ int				init_param(int argc, char **argv, t_param *param, int *first_nb)
 	return (1);
 }
 
-int				valid_input(int first_nb, char **argv, t_tab_inf *tab_inf, t_list **lst_a)
+int				valid_input(int first_nb, char **argv, t_tab_inf *tab_inf,
+																t_list **lst_a)
 {
 	int		fd;
 	int		i;
@@ -99,23 +103,22 @@ int				valid_input(int first_nb, char **argv, t_tab_inf *tab_inf, t_list **lst_a
 
 	fd = open(argv[first_nb], O_RDONLY);
 	if (!is_int(argv[first_nb]) && fd == -1)
-		return (0);
+		return (close_ret(fd, 0));
 	else if (!is_int(argv[first_nb]))
 		state = read_file(fd, tab_inf, lst_a);
 	else
 		state = read_args(&(argv[first_nb]), tab_inf, lst_a);
 	if (!state)
-		return (0);
+		return (close_ret(fd, 0));
 	tab_inf->sorted = malloc(tab_inf->sorted_len * sizeof(int));
 	if (!tab_inf->sorted)
-		return (0);
+		return (close_ret(fd, 0));
 	i = 0;
 	tmp_lst = *lst_a;
 	while (i < tab_inf->sorted_len)
 	{
-		tab_inf->sorted[i] = *((int *)tmp_lst->content);
-		i++;
+		tab_inf->sorted[i++] = *((int *)tmp_lst->content);
 		tmp_lst = tmp_lst->next;
 	}
-	return (quicksort(tab_inf->sorted, tab_inf->sorted_len));
+	return (close_ret(fd, quicksort(tab_inf->sorted, tab_inf->sorted_len)));
 }

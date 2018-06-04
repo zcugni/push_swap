@@ -16,7 +16,7 @@
 
 void	get_leaks(char *msg)
 {
-	system("leaks push_swap");
+	system("leaks checker");
 	ft_printf("\033[31m%s\033[0m", msg);
 	getchar();
 }

@@ -39,7 +39,7 @@ static void	send_in_a(t_split_status status, t_lst_inf *lst_inf,
 			status.i_sent++;
 		}
 		else
-			choose_rotate(lst_inf, tab_inf, 3, &status, param);
+			choose_rotate(lst_inf, tab_inf, &status, param);
 }
 
 void		split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
@@ -54,6 +54,7 @@ void		split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 	status.pivot_min = lst_inf->len_b / 2 + lst_inf->len_b % 2
 		+ tab_inf->next_index;
 	status.do_ra = 0;
+	status.modifier = 3;
 	send_in_a(status, lst_inf, tab_inf, param);
 	while (lst_inf->lst_b && get_int(lst_inf, 'b') == get_desired(tab_inf))
 	{

@@ -45,7 +45,7 @@ void		push(t_lst_inf *lst_inf, char *to_print, t_param param)
 		ft_lstadd(&lst_inf->lst_a, new);
 		lst_inf->len_b--;
 	}
-	else if (lst_inf->lst_a)
+	else if (ft_strchr(to_print, 'b') && lst_inf->lst_a)
 	{
 		new = ft_pop(&lst_inf->lst_a);
 		ft_lstadd(&lst_inf->lst_b, new);

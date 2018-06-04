@@ -12,14 +12,14 @@
 
 #include "push_swap.h"
 
-void	choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf, int modifier,
-	t_split_status *status, t_param param)
+void	choose_rotate(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
+										t_split_status *status, t_param param)
 {
 	int i;
 
 	i = lst_findi(lst_inf->lst_b, &(tab_inf->sorted[tab_inf->next_index]),
 		sizeof(tab_inf->sorted[tab_inf->next_index]));
-	if (i > lst_inf->len_b / 2 + lst_inf->len_b / 2 / 2 + modifier)
+	if (i > lst_inf->len_b / 2 + lst_inf->len_b / 2 / 2 + status->modifier)
 		rotate(lst_inf, "rrb\n", param);
 	else
 	{
@@ -58,7 +58,7 @@ int		is_int(char *str)
 	long long	nb;
 
 	if (str[0] != '-' && !ft_isdigit(str[0]))
-		return(0);
+		return (0);
 	i = 1;
 	while (str[i])
 	{

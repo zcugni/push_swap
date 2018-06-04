@@ -12,7 +12,37 @@
 
 #include "push_swap.h"
 
-static int	switch_op(t_lst_inf *lst_inf, t_param param)
+static	int	switch_op(char **inst, t_lst_inf *lst_inf, t_param param)
+{
+	char	*joined;
+
+	joined = ft_strjoin(inst[0], "\n");
+	if ((!ft_strcmp(inst[0], "sa") || !ft_strcmp(inst[0], "sb")
+												|| !ft_strcmp(inst[0], "ss")))
+		swap(lst_inf, joined, param);
+	else if ((!ft_strcmp(inst[0], "rra") || !ft_strcmp(inst[0], "rrb")
+				|| !ft_strcmp(inst[0], "rrr") || !ft_strcmp(inst[0], "ra") ||
+						!ft_strcmp(inst[0], "rb") || !ft_strcmp(inst[0], "rr")))
+		rotate(lst_inf, joined, param);
+	else if (!ft_strcmp(inst[0], "pa") || !ft_strcmp(inst[0], "pb"))
+		push(lst_inf, joined, param);
+	else
+	{
+		ft_strdel(&joined);
+		return (0);
+	}
+	ft_strdel(&joined);
+	return (1);
+}
+
+static int	return_error(char **to_free)
+{
+	ft_strdel(to_free);
+	free(to_free);
+	return (0);
+}
+
+static int	read_op(t_lst_inf *lst_inf, t_param param)
 {
 	char	**inst;
 
@@ -23,21 +53,14 @@ static int	switch_op(t_lst_inf *lst_inf, t_param param)
 	{
 		if (inst && *inst)
 		{
-			if ((!ft_strcmp(inst[0], "sa") || !ft_strcmp(inst[0], "sb")
-												|| !ft_strcmp(inst[0], "ss")))
-				swap(lst_inf, ft_strjoin_free(inst[0], "\n", 0), param);
-			else if ((!ft_strcmp(inst[0], "rra") || !ft_strcmp(inst[0], "rrb")
-				|| !ft_strcmp(inst[0], "rrr") || !ft_strcmp(inst[0], "ra") ||
-						!ft_strcmp(inst[0], "rb") || !ft_strcmp(inst[0], "rr")))
-				rotate(lst_inf, ft_strjoin_free(inst[0], "\n", 0), param);
-			else if (!ft_strcmp(inst[0], "pa") || !ft_strcmp(inst[0], "pb"))
-				push(lst_inf, ft_strjoin_free(inst[0], "\n", 0), param);
-			else
-				return (0);
+			if (!switch_op(inst, lst_inf, param))
+				return (return_error(inst));
 		}
 		else
-			return (0);
+			return (return_error(inst));
+		ft_strdel(inst);
 	}
+	free(inst);
 	return (1);
 }
 
@@ -57,14 +80,13 @@ int			main(int argc, char **argv)
 		return (display_error());
 	param.silent = 1;
 	if ((status_ok = valid_input(first_nb_i, argv, &tab_inf, &lst_inf.lst_a)))
-		if (!test_sorted(lst_inf.lst_a, 1))
-			if ((status_ok = switch_op(&lst_inf, param)))
-			{
-				if (lst_inf.lst_b || !test_sorted(lst_inf.lst_a, 1))
-					ft_putstr("KO\n");
-				else
-					ft_putstr("OK\n");
-			}
+		if ((status_ok = read_op(&lst_inf, param)))
+		{
+			if (lst_inf.lst_b || !test_sorted(lst_inf.lst_a, 1))
+				ft_putstr("KO\n");
+			else
+				ft_putstr("OK\n");
+		}
 	if (!status_ok)
 		return (display_error());
 	return (0);

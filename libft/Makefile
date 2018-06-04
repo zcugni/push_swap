@@ -44,10 +44,12 @@ SRCS = $(SRCS_STR) $(SRCS_LST) $(SRCS_IO) $(SRCS_MEM) $(SRCS_FTPRINTF) $(SRCS_MI
 OBJS = $(SRCS:%.c=objs/%.o)
 
 objs/%.o : srcs/str/%.c
+	@mkdir -p objs
 	@echo "compilation : " $*
 	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
 objs/%.o : srcs/lst/%.c
+	@mkdir -p objs
 	@echo "compilation : " $*
 	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
@@ -56,14 +58,17 @@ objs/%.o : srcs/io/%.c
 	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
 objs/%.o : srcs/mem/%.c
+	@mkdir -p objs
 	@echo "compilation : " $*
 	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
 objs/%.o : srcs/ft_printf/%.c
+	@mkdir -p objs
 	@echo "compilation : " $*
 	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
 objs/%.o : srcs/misc/%.c
+	@mkdir -p objs
 	@echo "compilation : " $*
 	@gcc $(FLAGS) -c $^ -o $@ -I$(HEADER_PATH)
 
@@ -75,10 +80,11 @@ $(NAME): $(OBJS) libft.h
 all: $(NAME)
 
 clean:
-	rm -f $(OBJS)
+	@echo "suppression..."
+	@rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re : fclean all
 

@@ -27,55 +27,64 @@ static void	qs_lst(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
 		qs_lst(lst_inf, tab_inf, lst_halves, param);
 	}
 	else
-	{
-		//exit(1);
 		sort_batch(lst_inf, tab_inf, param);
-		//exit(1);
-	}
+}
+
+static void	deal_little(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
+{
+	t_sort_status	sort_stat;
+
+	sort_stat.p_min_i = tab_inf->sorted_len / 2;
+	sort_stat.p_max_i = tab_inf->sorted_len - 1;
+	sort_stat.p_min_val = tab_inf->sorted[sort_stat.p_min_i];
+	sort_stat.p_max_val = tab_inf->sorted[sort_stat.p_max_i];
+	sort_stat.asc = 1;
+	sort_mini(sort_stat, lst_inf, tab_inf, param);
+	sort_stat.p_min_i = 0;
+	sort_stat.p_max_i = tab_inf->sorted_len / 2 - 1;
+	sort_stat.p_min_val = tab_inf->sorted[sort_stat.p_min_i];
+	sort_stat.p_max_val = tab_inf->sorted[sort_stat.p_max_i];
+	sort_stat.asc = 0;
+	sort_mini(sort_stat, lst_inf, tab_inf, param);
+	while (lst_inf->lst_b)
+		push(lst_inf, "pa\n", param);
+}
+
+static void	deal_default(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
+{
+	t_list			*lst_halves;
+	t_split_status	split_stat;
+
+	lst_halves = NULL;
+	qs_lst(lst_inf, tab_inf, &lst_halves, param);
+	split_stat.pivot_min = tab_inf->sorted_len / 2;
+	split_stat.nb_to_send = tab_inf->sorted_len / 2 + tab_inf->sorted_len % 2;
+	send_half(lst_inf, tab_inf, split_stat, param);
+	qs_lst(lst_inf, tab_inf, &lst_halves, param);
 }
 
 static void	get_instruct(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 {
-	t_list			*lst_halves;
 	t_split_status	split_stat;
 	t_sort_status	sort_stat;
 
-	lst_halves = NULL;
-	tab_inf->next_index = 0;
-	lst_inf->len_b = 0;
-	split_stat.nb_to_send = tab_inf->sorted_len / 2;
-	split_stat.pivot_min = 0;
 	if (tab_inf->sorted_len > 3)
 	{
+		split_stat.nb_to_send = tab_inf->sorted_len / 2;
+		split_stat.pivot_min = 0;
 		send_half(lst_inf, tab_inf, split_stat, param);
 		if (tab_inf->sorted_len > 9)
-		{
-			qs_lst(lst_inf, tab_inf, &lst_halves, param);
-			split_stat.pivot_min = tab_inf->sorted_len / 2;
-			split_stat.nb_to_send = tab_inf->sorted_len / 2 +
-														tab_inf->sorted_len % 2;
-			send_half(lst_inf, tab_inf, split_stat, param);
-			qs_lst(lst_inf, tab_inf, &lst_halves, param);
-		}
+			deal_default(lst_inf, tab_inf, param);
 		else
-		{
-			sort_stat.p_min_i = tab_inf->sorted_len / 2;
-			sort_stat.p_max_i =  tab_inf->sorted_len - 1;
-			sort_stat.asc = 1;
-			sort_mini_v2(sort_stat, lst_inf, tab_inf, param);
-			sort_stat.p_min_i = 0;
-			sort_stat.p_max_i =  tab_inf->sorted_len / 2 - 1;
-			sort_stat.asc = 0;
-			sort_mini_v2(sort_stat, lst_inf, tab_inf, param);
-			while (lst_inf->lst_b)
-				push(lst_inf, "pa\n", param);
-		}
+			deal_little(lst_inf, tab_inf, param);
 	}
 	else
 	{
 		sort_stat.p_min_i = 0;
-		sort_stat.p_max_i =  tab_inf->sorted_len;
-		sort_mini_v2(sort_stat, lst_inf, tab_inf, param);
+		sort_stat.p_max_i = tab_inf->sorted_len;
+		sort_stat.p_min_val = tab_inf->sorted[sort_stat.p_min_i];
+		sort_stat.p_max_val = tab_inf->sorted[sort_stat.p_max_i];
+		sort_mini(sort_stat, lst_inf, tab_inf, param);
 	}
 }
 
@@ -95,10 +104,13 @@ int			main(int argc, char **argv)
 	if (valid_input(first_nb_i, argv, &tab_inf, &(lst_inf.lst_a)))
 	{
 		if (!test_sorted(lst_inf.lst_a, 1))
+		{
+			tab_inf.next_index = 0;
+			lst_inf.len_b = 0;
 			get_instruct(&lst_inf, &tab_inf, param);
+		}
 	}
 	else
 		return (display_error());
-	//get_leaks("end\n");
 	return (0);
 }
