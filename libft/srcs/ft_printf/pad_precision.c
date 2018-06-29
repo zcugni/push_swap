@@ -65,7 +65,8 @@ static void	pad_others(t_detail conv_detail)
 
 void		pad_precision(t_detail conv_detail, char type)
 {
-	if (is_neg(conv_detail.conv->str[0]))
+	if (is_neg(conv_detail.conv->str[0]) && (type = 'd' || type == 'D' ||
+															type == 'i'))
 		conv_detail.pre++;
 	if ((type == 's' || type == 'S') && conv_detail.pre != 0)
 		pad_s(conv_detail, type);

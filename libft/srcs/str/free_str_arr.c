@@ -1,33 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsub.c                                        :+:      :+:    :+:   */
+/*   free_str_arr.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 15:08:32 by zcugni            #+#    #+#             */
-/*   Updated: 2017/11/09 15:08:37 by zcugni           ###   ########.fr       */
+/*   Created: 2018/05/24 15:19:08 by zcugni            #+#    #+#             */
+/*   Updated: 2018/05/24 15:19:10 by zcugni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strsub(char const *s, t_u_int start, size_t len)
+void	free_str_arr(t_char_arr *str_parts)
 {
-	char	*str;
-	size_t	i;
+	int i;
 
-	if (!s)
-		return (NULL);
-	str = (char *)malloc((len + 1) * sizeof(char));
-	if (str == NULL)
-		exit_error("malloc error\n", 1);
 	i = 0;
-	while (i < len)
+	while (i < str_parts->len)
 	{
-		str[i] = s[start + i];
+		free(str_parts->arr[i]);
+		str_parts->arr[i] = NULL;
 		i++;
 	}
-	str[i] = '\0';
-	return (str);
+	free(str_parts->arr);
+	str_parts->arr = NULL;
 }

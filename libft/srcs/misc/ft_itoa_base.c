@@ -17,6 +17,8 @@ static char	*set_value(int upper, int rest)
 	char	*letter;
 
 	letter = malloc(2);
+	if (!letter)
+		exit_error("malloc error\n", 1);
 	letter[0] = rest + 48;
 	letter[0] = (rest == 10 ? 'a' : letter[0]);
 	letter[0] = (rest == 11 ? 'b' : letter[0]);

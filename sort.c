@@ -21,7 +21,7 @@ static void	choose_op(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
 								get_int(lst_inf, 'a') != tab_inf->sorted[0]) ||
 								((get_int(lst_inf, 'a') == tab_inf->sorted[0] &&
 								get_desired(tab_inf) == tab_inf->sorted[1])))
-			rotate(lst_inf, "ra\n", param);
+			rotate_lst(lst_inf, "ra\n", param);
 		push(lst_inf, "pa\n", param);
 		status.do_ra = 1;
 		tab_inf->next_index++;
@@ -45,10 +45,10 @@ void		sort_batch(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 				get_desired(tab_inf) == tab_inf->sorted[1])))
 		{
 			tab_inf->next_index++;
-			rotate(lst_inf, "ra\n", param);
+			rotate_lst(lst_inf, "ra\n", param);
 		}
 		while (lst_inf->lst_b)
 			choose_op(lst_inf, tab_inf, status, param);
-		rotate(lst_inf, "ra\n", param);
+		rotate_lst(lst_inf, "ra\n", param);
 	}
 }

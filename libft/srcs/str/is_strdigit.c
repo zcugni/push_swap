@@ -1,33 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsub.c                                        :+:      :+:    :+:   */
+/*   is_strdigit.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 15:08:32 by zcugni            #+#    #+#             */
-/*   Updated: 2017/11/09 15:08:37 by zcugni           ###   ########.fr       */
+/*   Created: 2018/05/24 15:18:35 by zcugni            #+#    #+#             */
+/*   Updated: 2018/05/24 15:18:36 by zcugni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strsub(char const *s, t_u_int start, size_t len)
+int	is_strdigit(char *str, int accept_neg)
 {
-	char	*str;
-	size_t	i;
+	int i;
 
-	if (!s)
-		return (NULL);
-	str = (char *)malloc((len + 1) * sizeof(char));
-	if (str == NULL)
-		exit_error("malloc error\n", 1);
 	i = 0;
-	while (i < len)
-	{
-		str[i] = s[start + i];
+	while (ft_iswhitespace(str[i]))
 		i++;
-	}
-	str[i] = '\0';
-	return (str);
+	if (str[i] == '-' && accept_neg && str[i + 1])
+		i++;
+	else if (str[i] == '-' && !accept_neg)
+		return (0);
+	while (ft_isdigit(str[i]))
+		i++;
+	if (str[i] && !ft_isdigit(str[i]) && !ft_iswhitespace(str[i]))
+		return (0);
+	return (1);
 }

@@ -60,7 +60,7 @@ typedef struct	s_sort_status
 
 void			swap(t_lst_inf *lst_inf, char *to_print, t_param param);
 void			push(t_lst_inf *lst_inf, char *to_print, t_param param);
-void			rotate(t_lst_inf *lst_inf, char *to_print, t_param param);
+void			rotate_lst(t_lst_inf *lst_inf, char *to_print, t_param param);
 
 int				quicksort(int *arr, int len);
 

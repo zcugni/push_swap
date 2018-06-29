@@ -1,33 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsub.c                                        :+:      :+:    :+:   */
+/*   display_tree_id.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 15:08:32 by zcugni            #+#    #+#             */
-/*   Updated: 2017/11/09 15:08:37 by zcugni           ###   ########.fr       */
+/*   Created: 2018/06/14 13:24:37 by zcugni            #+#    #+#             */
+/*   Updated: 2018/06/14 13:24:38 by zcugni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strsub(char const *s, t_u_int start, size_t len)
+void	display_tree_id(t_rbt_node *rbt)
 {
-	char	*str;
-	size_t	i;
-
-	if (!s)
-		return (NULL);
-	str = (char *)malloc((len + 1) * sizeof(char));
-	if (str == NULL)
-		exit_error("malloc error\n", 1);
-	i = 0;
-	while (i < len)
+	if (rbt)
 	{
-		str[i] = s[start + i];
-		i++;
+		if (rbt->left_child)
+		{
+			ft_printf("l-");
+			display_tree_id(rbt->left_child);
+		}
+		if (rbt->index.is_nb)
+			ft_printf("%i ", rbt->index.nb);
+		else
+			ft_printf("%s ", rbt->index.str);
+		if (rbt->right_child)
+		{
+			ft_printf("r-");
+			display_tree_id(rbt->right_child);
+		}
 	}
-	str[i] = '\0';
-	return (str);
 }

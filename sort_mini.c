@@ -96,7 +96,7 @@ void		sort_mini(t_sort_status status, t_lst_inf *lst_inf,
 				str = ft_strjoin("rr", letter);
 			else
 				str = ft_strjoin("r", letter);
-			rotate(lst_inf, str, param);
+			rotate_lst(lst_inf, str, param);
 		}
 		free(str);
 		lst = lst_inf->lst_a;

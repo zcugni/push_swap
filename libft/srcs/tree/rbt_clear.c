@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsub.c                                        :+:      :+:    :+:   */
+/*   rbt_clear.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 15:08:32 by zcugni            #+#    #+#             */
-/*   Updated: 2017/11/09 15:08:37 by zcugni           ###   ########.fr       */
+/*   Created: 2018/06/23 13:09:46 by zcugni            #+#    #+#             */
+/*   Updated: 2018/06/23 13:09:47 by zcugni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strsub(char const *s, t_u_int start, size_t len)
+void	rbt_clear(t_rbt_node **rbt, void (*free_content)(void *content))
 {
-	char	*str;
-	size_t	i;
-
-	if (!s)
-		return (NULL);
-	str = (char *)malloc((len + 1) * sizeof(char));
-	if (str == NULL)
-		exit_error("malloc error\n", 1);
-	i = 0;
-	while (i < len)
+	if (*rbt)
 	{
-		str[i] = s[start + i];
-		i++;
+		if ((*rbt)->left_child)
+			rbt_clear(&(*rbt)->left_child, free_content);
+		if ((*rbt)->right_child)
+			rbt_clear(&(*rbt)->right_child, free_content);
+		free_content((*rbt)->content);
+		free((*rbt));
+		(*rbt) = NULL;
 	}
-	str[i] = '\0';
-	return (str);
 }

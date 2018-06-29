@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static int	count_words(char const *s, char c)
+static int	count_words(char const *s)
 {
 	int first_word;
 	int nb_words;
@@ -23,8 +23,8 @@ static int	count_words(char const *s, char c)
 	nb_words = 0;
 	while (s[i])
 	{
-		if (s[i] != c)
-			if (first_word == 1 || s[i - 1] == c)
+		if (!ft_iswhitespace(s[i]))
+			if (first_word == 1 || ft_iswhitespace(s[i - 1]))
 			{
 				first_word = 0;
 				nb_words++;
@@ -34,7 +34,7 @@ static int	count_words(char const *s, char c)
 	return (nb_words);
 }
 
-static void	add_words(char const *s, char c, char **tmp_arr)
+static void	add_words(char const *s, char **tmp_arr)
 {
 	int		first_word;
 	size_t	size;
@@ -46,12 +46,12 @@ static void	add_words(char const *s, char c, char **tmp_arr)
 	i = 0;
 	while (s[i])
 	{
-		if (s[i] != c)
-			if (first_word == 1 || s[i - 1] == c)
+		if (!ft_iswhitespace(s[i]))
+			if (first_word == 1 || ft_iswhitespace(s[i - 1]))
 			{
 				first_word = 0;
 				size = 0;
-				while (s[i + size] != c && s[i + size])
+				while (s[i + size] && !ft_iswhitespace(s[i + size]))
 					size++;
 				tmp_arr[nb_words] = ft_strndup(&s[i], size);
 				nb_words++;
@@ -60,18 +60,18 @@ static void	add_words(char const *s, char c, char **tmp_arr)
 	}
 }
 
-char		**ft_strsplit(char const *s, char c)
+char		**ft_strsplit_white(char const *s)
 {
 	char	**tmp_arr;
 	int		nb_words;
 
 	if (!s)
 		return (NULL);
-	nb_words = count_words(s, c);
+	nb_words = count_words(s);
 	tmp_arr = malloc(sizeof(char*) * (nb_words + 1));
 	if (tmp_arr == NULL)
 		exit_error("malloc error\n", 1);
-	add_words(s, c, tmp_arr);
+	add_words(s, tmp_arr);
 	tmp_arr[nb_words] = 0;
 	return (tmp_arr);
 }

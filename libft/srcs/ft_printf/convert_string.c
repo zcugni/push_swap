@@ -18,6 +18,8 @@ static void	init(int *i, wchar_t *nb_arr, t_result **res)
 	while (nb_arr[*i])
 		(*i)++;
 	(*res)->str = malloc((*i + 1) * sizeof(char *));
+	if (!(*res)->str)
+		exit_error("malloc_error\n", 1);
 	(*res)->size = *i;
 	(*res)->str[*i] = NULL;
 	*i = 0;
@@ -29,23 +31,22 @@ t_result	*convert_ls(wchar_t *nb_arr)
 	t_result	*res;
 	char		*tmp;
 
-	res = malloc(sizeof(t_result));
-	if (nb_arr && res)
+	if (!(res = malloc(sizeof(t_result))))
+		exit_error("malloc_error\n", 1);
+	if (nb_arr)
 	{
 		init(&i, nb_arr, &res);
 		while (nb_arr[i])
 		{
 			tmp = convert_lc(nb_arr[i]);
-			if (tmp)
-				res->str[i] = tmp;
-			else
-				res->str[i] = NULL;
+			res->str[i] = tmp;
 			i++;
 		}
 	}
-	else if (!nb_arr && res)
+	else if (!nb_arr)
 	{
-		res->str = malloc(sizeof(char *));
+		if (!(res->str = malloc(sizeof(char *))))
+			exit_error("malloc_error\n", 1);
 		res->str[0] = ft_strdup("(null)");
 		res->size = 1;
 	}

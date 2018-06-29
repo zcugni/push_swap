@@ -36,6 +36,20 @@ typedef struct				s_list
 	struct s_list	*next;
 }							t_list;
 
+typedef struct				s_char_arr
+{
+	char	**arr;
+	int		len;
+}							t_char_arr;
+
+typedef struct				s_bubble_sort
+{
+	t_list	*first_el;
+	t_list	*second_el;
+	t_list	*prev_el;
+	int		sorted;
+}							t_bubble_sort;
+
 /*
 **struct for printf
 */
@@ -68,6 +82,26 @@ typedef struct				s_pos
 	int i;
 }							t_pos;
 
+/*
+**struct for tree
+*/
+typedef struct				s_tree_index
+{
+	int		nb;
+	char	*str;
+	int		is_nb;
+}							t_tree_index;
+
+typedef struct				s_rbt_node
+{
+	void				*content;
+	int					red;
+	t_tree_index		index;
+	struct s_rbt_node	*parent;
+	struct s_rbt_node	*left_child;
+	struct s_rbt_node	*right_child;
+}							t_rbt_node;
+
 typedef unsigned char		t_u_char;
 typedef unsigned int		t_u_int;
 typedef	unsigned long long	t_ull;
@@ -82,6 +116,7 @@ void						ft_strclr(char *s);
 char						*ft_strcpy(char *dst, const char *src);
 int							ft_strcmp(const char *s1, const char *s2);
 void						ft_strdel(char **as);
+void						free_str_arr(t_char_arr *str_arr);
 char						*ft_strdup(const char *s1);
 int							ft_strequ(char const *s1, char const *s2);
 void						ft_striter(char *s, void (*f)(char *));
@@ -114,6 +149,10 @@ char						*ft_strsub_free(char *s, t_u_int start, size_t len);
 char						*ft_strtrim(char const *s);
 int							ft_toupper(int c);
 int							ft_tolower(int c);
+int							is_strdigit(char *str, int accept_neg);
+char						*join_parts(t_char_arr *str_parts,
+													char *sep, int limit);
+char						**ft_strsplit_white(char const *s);
 /*
 **Lst
 */
@@ -121,21 +160,44 @@ void						ft_lstadd(t_list **alst, t_list *new);
 void						ft_lstappend(t_list **alst, t_list *new);
 t_list						*ft_lstcpy(t_list *ori);
 void						ft_lstdel(t_list **alst,
-	void (*del)(void *, size_t));
+												void (*del)(void *, size_t));
 void						ft_lstdelone(t_list **alst,
-	void (*del)(void *, size_t));
+												void (*del)(void *, size_t));
 t_list						*ft_lstfind(t_list *list, void *content,
-	size_t size);
+															size_t size);
 int							lst_findi(t_list *list, void *content, size_t size);
 void						ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 int							ft_lstlength(t_list *lst);
 t_list						*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 t_list						*ft_lstnew(void const *content,
-	size_t content_size);
+														size_t content_size);
+t_list						*ft_lstnew_pointer(void *content,
+														size_t content_size);
 void						lst_clr(t_list **lst);
 char						*lst_to_str(t_list *lst);
 t_list						*ft_pop(t_list **lst);
 int							ft_pop_value(t_list **lst);
+t_list						*lst_pop_pointer(t_list **lst);
+t_list						*lstp_pop_at(t_list **lst, void *p);
+void						bubble_sort_lst(t_list **lst,
+												int (*get_nb)(t_list *lst));
+void						remove_first_elem(t_list **lst);
+void						lst_partial_clr(t_list **lst);
+/*
+**Tree
+*/
+t_rbt_node					*find_in_tree(t_rbt_node *rbt,
+												t_tree_index searched_index);
+void						rotate(t_rbt_node *node, int rotate_right);
+t_rbt_node					*new_rbt_node(void *content, t_tree_index index);
+void						insert_rbt(t_rbt_node **rbt, t_rbt_node *current,
+															t_rbt_node *new);
+int							is_inf(t_tree_index rbt_index_1,
+													t_tree_index rbt_index_2);
+t_rbt_node					*rearrange(t_rbt_node *node);
+void						display_tree_id(t_rbt_node *rbt);
+void						rbt_clear(t_rbt_node **rbt,
+									void (*free_content)(void *content));
 /*
 **IO
 */
@@ -149,6 +211,7 @@ void						ft_putstr(const char *str);
 void						ft_putstr_fd(char const *s, int fd);
 int							get_next_line(const int fd, char **line,
 	char separator);
+void						exit_error(char *msg, int code);
 /*
 **Mem
 */
@@ -197,11 +260,13 @@ int							display(t_list *final_lst, int error);
 **Misc
 */
 long long					ft_atoi(char *str);
+long long					ft_atoi_harsh(char *str, int accept_neg);
 int							ft_isascii(int c);
 int							ft_isalnum(int c);
 int							ft_isalpha(int c);
 int							ft_isdigit(int c);
 int							ft_isprint(int c);
+int							ft_iswhitespace(int c);
 char						*ft_itoa(long long nb);
 char						*ft_itoa_base(unsigned int nb, int base, int upper);
 long long					ft_pow(int nb, int power);

@@ -21,7 +21,7 @@ static void	send_in_a(t_split_status status, t_lst_inf *lst_inf,
 		{
 			if (status.do_ra)
 			{
-				rotate(lst_inf, "ra\n", param);
+				rotate_lst(lst_inf, "ra\n", param);
 				status.do_ra = 0;
 				status.i_rotated++;
 			}
@@ -59,7 +59,7 @@ void		split_b(t_lst_inf *lst_inf, t_tab_inf *tab_inf, t_param param)
 	while (lst_inf->lst_b && get_int(lst_inf, 'b') == get_desired(tab_inf))
 	{
 		push(lst_inf, "pa\n", param);
-		rotate(lst_inf, "ra\n", param);
+		rotate_lst(lst_inf, "ra\n", param);
 		tab_inf->next_index++;
 	}
 }
@@ -77,7 +77,7 @@ void		send_half(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
 		if (get_int(lst_inf, 'a') == get_desired(tab_inf) &&
 			tab_inf->next_index != 0)
 		{
-			rotate(lst_inf, "ra\n", param);
+			rotate_lst(lst_inf, "ra\n", param);
 			tab_inf->next_index++;
 			i++;
 		}
@@ -88,7 +88,7 @@ void		send_half(t_lst_inf *lst_inf, t_tab_inf *tab_inf,
 			i++;
 		}
 		else
-			rotate(lst_inf, "ra\n", param);
+			rotate_lst(lst_inf, "ra\n", param);
 	}
 }
 
@@ -102,7 +102,7 @@ void		send_in_b(t_lst_inf *lst_inf, int diff, t_tab_inf *tab_inf,
 	{
 		if (get_int(lst_inf, 'a') <= get_desired(tab_inf))
 		{
-			rotate(lst_inf, "ra\n", param);
+			rotate_lst(lst_inf, "ra\n", param);
 			tab_inf->next_index++;
 		}
 		else if (get_int_lst(lst_inf->lst_a->next) == get_desired(tab_inf) &&

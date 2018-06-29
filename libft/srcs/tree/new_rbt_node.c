@@ -1,33 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsub.c                                        :+:      :+:    :+:   */
+/*   new_rbt_node.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 15:08:32 by zcugni            #+#    #+#             */
-/*   Updated: 2017/11/09 15:08:37 by zcugni           ###   ########.fr       */
+/*   Created: 2018/06/12 13:38:12 by zcugni            #+#    #+#             */
+/*   Updated: 2018/06/12 13:38:13 by zcugni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strsub(char const *s, t_u_int start, size_t len)
+t_rbt_node	*new_rbt_node(void *content, t_tree_index index)
 {
-	char	*str;
-	size_t	i;
+	t_rbt_node *node;
 
-	if (!s)
-		return (NULL);
-	str = (char *)malloc((len + 1) * sizeof(char));
-	if (str == NULL)
+	node = malloc(sizeof(t_rbt_node));
+	if (!node)
 		exit_error("malloc error\n", 1);
-	i = 0;
-	while (i < len)
-	{
-		str[i] = s[start + i];
-		i++;
-	}
-	str[i] = '\0';
-	return (str);
+	node->red = 1;
+	node->right_child = NULL;
+	node->left_child = NULL;
+	node->content = content;
+	node->index = index;
+	node->parent = NULL;
+	return (node);
 }

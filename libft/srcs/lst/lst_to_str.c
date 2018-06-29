@@ -21,7 +21,7 @@ char	*lst_to_str(t_list *lst)
 	tmp_lst = lst;
 	str = malloc(ft_lstlength(lst) + 1);
 	if (str == NULL)
-		return (NULL);
+		exit_error("malloc error", 1);
 	i = 0;
 	while (tmp_lst)
 	{

@@ -12,18 +12,14 @@
 
 #include "libft.h"
 
-#include "stdio.h"
-
 static int	if_return(char **rest, char **line, int index)
 {
 	*line = ft_strndup(*rest, index);
 	if (index == (int)ft_strlen(*rest) - 1)
 		ft_strdel(rest);
 	else
-	{
 		ft_memmove(*rest, &((*rest)[index + 1]),
 				ft_strlen(&((*rest)[index + 1])) + 1);
-	}
 	return (1);
 }
 
@@ -45,7 +41,7 @@ char		*ft_strjoin_overlap(char **s1, char **s2)
 	i = 0;
 	str = malloc(ft_strlen(*s1) + ft_strlen(*s2) + 1);
 	if (!str)
-		return (NULL);
+		exit_error("malloc error\n", 1);
 	while (i < ft_strlen(*s1))
 	{
 		str[i] = (*s1)[i];
@@ -83,7 +79,7 @@ int			get_next_line(const int fd, char **line, char separator)
 					return (0);
 				return (update_line(line, &rest));
 			}
-			else if (state == -1)
+			else if (state < 0)
 				return (state);
 			rest = ft_strjoin_overlap(&rest, &buff);
 		}

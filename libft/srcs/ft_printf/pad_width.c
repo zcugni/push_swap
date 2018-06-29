@@ -19,6 +19,8 @@ char		*fill_new_str(char chara, int len)
 
 	i = 0;
 	str = malloc(len);
+	if (!str)
+		exit_error("malloc error\n", 1);
 	while (i < len)
 	{
 		str[i] = chara;

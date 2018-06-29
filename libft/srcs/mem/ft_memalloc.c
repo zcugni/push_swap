@@ -18,7 +18,7 @@ void	*ft_memalloc(size_t size)
 
 	new = (char *)malloc(size);
 	if (!new)
-		return (NULL);
+		exit_error("malloc error\n", 1);
 	ft_bzero(new, size);
 	return ((void *)new);
 }

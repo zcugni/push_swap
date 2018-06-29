@@ -23,7 +23,7 @@ static	int	switch_op(char **inst, t_lst_inf *lst_inf, t_param param)
 	else if ((!ft_strcmp(inst[0], "rra") || !ft_strcmp(inst[0], "rrb")
 				|| !ft_strcmp(inst[0], "rrr") || !ft_strcmp(inst[0], "ra") ||
 						!ft_strcmp(inst[0], "rb") || !ft_strcmp(inst[0], "rr")))
-		rotate(lst_inf, joined, param);
+		rotate_lst(lst_inf, joined, param);
 	else if (!ft_strcmp(inst[0], "pa") || !ft_strcmp(inst[0], "pb"))
 		push(lst_inf, joined, param);
 	else

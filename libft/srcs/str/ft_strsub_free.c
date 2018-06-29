@@ -21,7 +21,7 @@ char	*ft_strsub_free(char *s, t_u_int start, size_t len)
 		return (NULL);
 	str = (char *)malloc((len + 1) * sizeof(char));
 	if (str == NULL)
-		return (NULL);
+		exit_error("malloc error\n", 1);
 	i = 0;
 	while (i < len)
 	{

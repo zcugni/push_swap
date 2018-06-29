@@ -1,33 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsub.c                                        :+:      :+:    :+:   */
+/*   lst_pop_pointer.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 15:08:32 by zcugni            #+#    #+#             */
-/*   Updated: 2017/11/09 15:08:37 by zcugni           ###   ########.fr       */
+/*   Created: 2018/06/17 14:21:34 by zcugni            #+#    #+#             */
+/*   Updated: 2018/06/17 14:21:36 by zcugni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strsub(char const *s, t_u_int start, size_t len)
+t_list	*lst_pop_pointer(t_list **lst)
 {
-	char	*str;
-	size_t	i;
+	t_list	*new;
+	t_list	*tmp;
 
-	if (!s)
-		return (NULL);
-	str = (char *)malloc((len + 1) * sizeof(char));
-	if (str == NULL)
-		exit_error("malloc error\n", 1);
-	i = 0;
-	while (i < len)
+	new = NULL;
+	if (lst && *lst)
 	{
-		str[i] = s[start + i];
-		i++;
+		new = ft_lstnew_pointer((*lst)->content, (*lst)->content_size);
+		tmp = *lst;
+		*lst = (*lst)->next;
+		free(tmp);
 	}
-	str[i] = '\0';
-	return (str);
+	return (new);
 }

@@ -1,33 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsub.c                                        :+:      :+:    :+:   */
+/*   compare_index.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 15:08:32 by zcugni            #+#    #+#             */
-/*   Updated: 2017/11/09 15:08:37 by zcugni           ###   ########.fr       */
+/*   Created: 2018/06/12 13:37:44 by zcugni            #+#    #+#             */
+/*   Updated: 2018/06/12 13:37:45 by zcugni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strsub(char const *s, t_u_int start, size_t len)
+int		is_inf(t_tree_index rbt_index_1, t_tree_index rbt_index_2)
 {
-	char	*str;
-	size_t	i;
-
-	if (!s)
-		return (NULL);
-	str = (char *)malloc((len + 1) * sizeof(char));
-	if (str == NULL)
-		exit_error("malloc error\n", 1);
-	i = 0;
-	while (i < len)
+	if (rbt_index_1.is_nb)
 	{
-		str[i] = s[start + i];
-		i++;
+		if (rbt_index_1.nb < rbt_index_2.nb)
+			return (1);
+		else
+			return (0);
 	}
-	str[i] = '\0';
-	return (str);
+	else
+	{
+		if (ft_strcmp(rbt_index_1.str, rbt_index_2.str) < 0)
+			return (1);
+		else
+			return (0);
+	}
 }

@@ -1,33 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsub.c                                        :+:      :+:    :+:   */
+/*   lstp_pop_at.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zcugni <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/09 15:08:32 by zcugni            #+#    #+#             */
-/*   Updated: 2017/11/09 15:08:37 by zcugni           ###   ########.fr       */
+/*   Created: 2018/06/17 14:20:42 by zcugni            #+#    #+#             */
+/*   Updated: 2018/06/17 14:20:43 by zcugni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strsub(char const *s, t_u_int start, size_t len)
+t_list	*lstp_pop_at(t_list **lst, void *p)
 {
-	char	*str;
-	size_t	i;
+	t_list *current_elem;
+	t_list *prev_elem;
 
-	if (!s)
-		return (NULL);
-	str = (char *)malloc((len + 1) * sizeof(char));
-	if (str == NULL)
-		exit_error("malloc error\n", 1);
-	i = 0;
-	while (i < len)
+	current_elem = *lst;
+	prev_elem = NULL;
+	while (current_elem)
 	{
-		str[i] = s[start + i];
-		i++;
+		if (current_elem->content == p)
+		{
+			if (prev_elem)
+				prev_elem->next = current_elem->next;
+			else
+				*lst = current_elem->next;
+			current_elem->next = NULL;
+			return (current_elem);
+		}
+		prev_elem = current_elem;
+		current_elem = current_elem->next;
 	}
-	str[i] = '\0';
-	return (str);
+	return (NULL);
 }

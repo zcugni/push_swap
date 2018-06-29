@@ -111,7 +111,7 @@ static void	rotate_down(t_lst_inf *lst_inf, char *to_print)
 	}
 }
 
-void		rotate(t_lst_inf *lst_inf, char *to_print, t_param param)
+void		rotate_lst(t_lst_inf *lst_inf, char *to_print, t_param param)
 {
 	if (ft_strstr(to_print, "rr") && ft_strlen(to_print) > 3)
 		rotate_down(lst_inf, to_print);
