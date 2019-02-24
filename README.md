@@ -20,20 +20,10 @@ Nous devions aussi créer un petit programme "Checker" qui vérifie que la liste
 
 ## Mon implémentation :
 
-L'idée générale est de diviser la liste en paquet de nombre croissants (mais non ordonnés) dans B pour les trier puis de les renvoyer à la fin de A. 
-
-Voici les étapes que mon algorithme suit :
-1. Envoyer la moitié inférieur dans B (en tournant A)
-2. Renvoyer la moitié supérieur de B dans A (en tournant B)
-3. Faire cela en boucle tant que le nombre d'éléments dans B est supérieur à 9 
-4. Trier le paquet dans B, le renvoyer dans A, et tourner A pour qu'il soit à la fin
-5. Renvoyer le prochain paquer de A au début de B
-6. S'il a plus de 9 élément, reprendre depuis l'étape 2, sinon depuis l'étape 4
-7. Faire cela en boucle tant que la lsite n'est pas entièrement triée.
-[IMAGE A RAJOUTER]
+![algorigramme](Doc/algorigramme.png)
 
 On se retrouve à la fin avec A contenant des paquest triés de N (< 9) élément par odre croissant.
-Tout au long de ce processus, il y a quelques améliorations permettant d'être plus efficace. Par exemple, quand je tourne dans B pour le trier ou renvoyer une partie de ces éléments, si je tombe sur le prochain nombre dont A à besoin, je le lui envoie directement.
+Tout au long de ce processus, il y a quelques améliorations permettant d'être plus efficace, tout comme le fait de trier B tout en renvoyant des éléments dans A. Quand je parcoure une liste, si je tombe sur le prochain nombre désiré, je l'envoies directement là où il faut pour gagner du temps.
 
 Mon programme fait encore des mouvements inutile par moment, pour parer à cela, j'aurais pu parcourir la liste de toutes mes instructions et remplacer les redondances ou les actions s'annulant.
 
@@ -69,4 +59,5 @@ B :
 
 ## Visualisation :
 J'ai fait une visualisation simple montrant le contenu des deux listes (avec une ellipse si elles sont trop grandes) et le dernier mouvement en couleur.
-[IMAGE A RAJOUTER]
+
+![algorigramme](Doc/push_swap_visu.png)
