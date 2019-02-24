@@ -55,8 +55,6 @@ A : [0 - 5 !] [6 - 11 !] [12 - 18 !] [19 - 24 !] [25 - 37 !] [38 - 49 !] [50 - 5
  [57 - 62 !] [63 - 69 !] [70 - 75 !] [76 - 82 !] [83 - 87 !] [88 - 94 !] [95 - 99 !]  
 B :  
 
-[SIMPLIFIER EN PRENANT UNE LISTE DE 50]
-
 ## Visualisation :
 J'ai fait une visualisation simple montrant le contenu des deux listes (avec une ellipse si elles sont trop grandes) et le dernier mouvement en couleur.
 
